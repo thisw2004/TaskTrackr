@@ -1,4 +1,14 @@
-<div class="container">
+<div class="app-container">
+  <header *ngIf="isLoggedIn">
+    <h1>{{ title }}</h1>
+    <button (click)="logout()" class="logout-btn">Logout</button>
+  </header>
+  
+  <router-outlet></router-outlet>
+</div>
+
+<!-- Keep your existing content - this will be moved to the dashboard component -->
+<div class="container" *ngIf="isLoggedIn">
   <header>
     <h1>{{ title }}</h1>
     <p>Manage your tasks efficiently</p>

@@ -1,143 +1,119 @@
-import { Component } from '@angular/core';
-
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  deadline: string;
-  completed: boolean;
-}
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from './services/auth.service';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'TaskTrackr';
-  tasks: Task[] = [
-    {
-      id: '1',
-      title: 'Complete Angular project',
-      description: 'Finish TaskTrackr application implementation',
-      deadline: '2025-05-10',
-      completed: false
-    },
-    {
-      id: '2',
-      title: 'Study for exam',
-      description: 'Review chapters 5-8 for Advanced Programming exam',
-      deadline: '2025-05-15',
-      completed: false
-    },
-    {
-      id: '3',
-      title: 'Buy groceries',
-      description: 'Milk, eggs, bread, and vegetables',
-      deadline: '2025-05-06',
-      completed: true
-    }
-  ];
-
-  newTask: Partial<Task> = {
-    title: '',
-    description: '',
-    deadline: ''
-  };
-
-  editingTask: Task | null = null;
-  minDate: string = new Date().toISOString().split('T')[0]; // Today's date in YYYY-MM-DD format
-
-  getActiveTasks(): Task[] {
-    return this.tasks.filter(task => !task.completed);
-  }
-
-  getCompletedTasks(): Task[] {
-    return this.tasks.filter(task => task.completed);
-  }
-
-  validateDate(dateStr: string): boolean {
-    const selectedDate = new Date(dateStr);
+  isLoggedIn = false;
+  
+  newTask: any = {};
+  tasks: any[] = [];
+  editingTask: any = null;
+  minDate: string;
+  
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) {
+    // Set minimum date to today for deadline validation
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Reset time to start of day for fair comparison
-    return selectedDate >= today;
+    this.minDate = today.toISOString().split('T')[0];
   }
 
-  addTask(): void {
-    if (!this.newTask.title || !this.newTask.deadline) return;
+  ngOnInit() {
+    // Check authentication status on init and when it changes
+    this.authService.currentUser.subscribe(user => {
+      this.isLoggedIn = !!user;
+    });
     
-    // Validate date is not in the past
-    if (!this.validateDate(this.newTask.deadline)) {
-      alert('Deadline cannot be in the past. Please select a future date.');
-      return;
-    }
+    // Check authentication on route changes
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      // If not on login or register pages and not logged in, redirect to login
+      if (!this.isLoggedIn && 
+          !this.router.url.includes('/login') && 
+          !this.router.url.includes('/register')) {
+        this.router.navigate(['/login']);
+      }
+    });
+  }
+
+  addTask() {
+    // Generate unique ID for new task
+    const id = this.tasks.length > 0 ? Math.max(...this.tasks.map(task => task.id)) + 1 : 1;
     
-    const task: Task = {
-      id: Date.now().toString(),
+    // Create new task with form data
+    const task = {
+      id: id,
       title: this.newTask.title,
       description: this.newTask.description || '',
       deadline: this.newTask.deadline,
-      completed: false
+      completed: false,
+      createdAt: new Date()
     };
-
-    this.tasks.unshift(task);
+    
+    // Add task to list
+    this.tasks.push(task);
     
     // Reset form
-    this.newTask = {
-      title: '',
-      description: '',
-      deadline: ''
-    };
+    this.newTask = {};
+  }
+  
+  getActiveTasks() {
+    // Return active tasks
+    return this.tasks.filter(task => !task.completed);
   }
 
-  deleteTask(id: string): void {
-    if (confirm('Are you sure you want to delete this task?')) {
-      this.tasks = this.tasks.filter(task => task.id !== id);
-    }
+  getCompletedTasks() {
+    // Return completed tasks
+    return this.tasks.filter(task => task.completed);
   }
-
-  editTask(task: Task): void {
-    // Create a copy of the task to avoid direct mutation
-    this.editingTask = { ...task };
-  }
-
-  cancelEdit(): void {
-    this.editingTask = null;
-  }
-
-  saveEditedTask(): void {
-    if (!this.editingTask || !this.editingTask.title || !this.editingTask.deadline) return;
-    
-    // Validate date is not in the past
-    if (!this.validateDate(this.editingTask.deadline)) {
-      alert('Deadline cannot be in the past. Please select a future date.');
-      return;
-    }
-    
-    // Find and update the task in the array
-    this.tasks = this.tasks.map(task => 
-      task.id === this.editingTask!.id ? this.editingTask! : task
-    );
-    
-    // Exit edit mode
-    this.editingTask = null;
-  }
-
-  toggleComplete(task: Task): void {
-    const taskElement = document.getElementById(`task-${task.id}`);
-    if (taskElement && !task.completed) {
-      taskElement.classList.add('task-completed-animation');
-      
-      setTimeout(() => {
-        task.completed = !task.completed;
-      }, 500);
-    } else {
-      task.completed = !task.completed;
-    }
-  }
-
-  isOverdue(task: Task): boolean {
-    if (task.completed) return false;
+  
+  isOverdue(task: any) {
+    // Check if task is overdue
     return new Date(task.deadline) < new Date();
+  }
+  
+  toggleComplete(task: any) {
+    // Toggle task completion
+    task.completed = !task.completed;
+  }
+  
+  editTask(task: any) {
+    // Set task for editing
+    this.editingTask = {...task};
+  }
+  
+  saveEditedTask() {
+    // Find and update the task
+    const index = this.tasks.findIndex(task => task.id === this.editingTask.id);
+    if (index !== -1) {
+      this.tasks[index] = {...this.editingTask};
+    }
+    
+    // Clear editing state
+    this.editingTask = null;
+  }
+  
+  cancelEdit() {
+    // Clear editing state
+    this.editingTask = null;
+  }
+  
+  deleteTask(id: number) {
+    // Delete task implementation
+    this.tasks = this.tasks.filter(task => task.id !== id);
+  }
+  
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

@@ -10,7 +10,7 @@ import { AuthService } from '../services/auth.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class NoAuthGuard implements CanActivate {
   
   constructor(
     private router: Router,
@@ -21,15 +21,13 @@ export class AuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): boolean {
-    // Check if the user is logged in
-    if (this.authService.isLoggedIn()) {
+    // Check if user is not logged in
+    if (!this.authService.isLoggedIn()) {
       return true;
     }
 
-    // Not logged in, redirect to login with the return url
-    this.router.navigate(['/login'], { 
-      queryParams: { returnUrl: state.url } 
-    });
+    // Already logged in, redirect to dashboard
+    this.router.navigate(['/dashboard']);
     return false;
   }
 }
