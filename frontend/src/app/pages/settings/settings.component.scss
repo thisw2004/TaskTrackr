@@ -1,0 +1,75 @@
+/* filepath: /Users/thirza/Library/CloudStorage/OneDrive-AvansHogeschool/Jaar 3/Advanced Programming/TaskTrackr/frontend/src/app/pages/settings/settings.component.scss */
+@import '../../../styles/theme-variables';
+
+.settings-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+}
+
+h1 {
+  margin-bottom: $spacing-xs;
+  color: $text-primary;
+}
+
+.subtitle {
+  color: $text-secondary;
+  margin-bottom: $spacing-xl;
+}
+
+.settings-card {
+  background-color: $card-background;
+  border-radius: $border-radius-md;
+  box-shadow: $card-shadow;
+  margin-bottom: $spacing-lg;
+  transition: box-shadow $transition-speed ease;
+  
+  &:hover {
+    box-shadow: $elevated-shadow;
+  }
+}
+
+h2 {
+  margin: $spacing-lg 0 $spacing-md;
+  color: $text-primary;
+  font-size: $font-size-lg;
+  font-weight: 500;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-md 0;
+}
+
+.setting-description {
+  flex: 1;
+  
+  h3 {
+    margin: 0 0 $spacing-xs;
+    font-size: $font-size-md;
+    color: $text-primary;
+    font-weight: 500;
+  }
+  
+  p {
+    margin: 0;
+    color: $text-secondary;
+    font-size: $font-size-sm;
+  }
+}
+
+mat-divider {
+  margin: $spacing-md 0;
+}
+
+.button-container {
+  margin-top: $spacing-xl;
+  display: flex;
+  justify-content: flex-end;
+  
+  button {
+    min-width: 150px;
+  }
+}

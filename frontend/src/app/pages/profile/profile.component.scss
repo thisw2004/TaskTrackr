@@ -1,0 +1,88 @@
+/* filepath: /Users/thirza/Library/CloudStorage/OneDrive-AvansHogeschool/Jaar 3/Advanced Programming/TaskTrackr/frontend/src/app/pages/profile/profile.component.scss */
+@import '../../../styles/theme-variables';
+
+.profile-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+}
+
+h1 {
+  margin-bottom: $spacing-md;
+  color: $text-primary;
+}
+
+.profile-content {
+  background-color: $card-background;
+  border-radius: $border-radius-md;
+  box-shadow: $card-shadow;
+  padding: $spacing-xl;
+  transition: box-shadow $transition-speed ease;
+  
+  &:hover {
+    box-shadow: $elevated-shadow;
+  }
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacing-xl;
+  
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.profile-image-container {
+  position: relative;
+  margin-right: $spacing-xl;
+  
+  @media (max-width: 600px) {
+    margin-right: 0;
+    margin-bottom: $spacing-lg;
+  }
+}
+
+.profile-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid $primary-color;
+  box-shadow: $card-shadow;
+}
+
+.change-photo-btn {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  background-color: $primary-color;
+}
+
+.profile-actions {
+  margin-left: auto;
+  display: flex;
+  gap: $spacing-md;
+  
+  @media (max-width: 600px) {
+    margin-left: 0;
+    margin-top: $spacing-md;
+  }
+  
+  button {
+    min-width: 120px;
+  }
+}
+
+.profile-form {
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  mat-form-field {
+    margin-bottom: $spacing-lg;
+  }
+}

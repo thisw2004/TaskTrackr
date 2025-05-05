@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, tap, catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 // User model interface
 export interface User {
@@ -19,8 +20,8 @@ export class AuthService {
   private currentUserSubject: BehaviorSubject<User | null>;
   public currentUser: Observable<User | null>;
 
-  constructor(private http: HttpClient) {
-    this.currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromStorage());
+  constructor(private http: HttpClient, private router: Router) {
+    this.currentUserSubject = new BehaviorSubject<User | null>(this.getUserFromLocalStorage());
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
@@ -50,6 +51,7 @@ export class AuthService {
     // Remove user from local storage
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
+    this.router.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {
@@ -57,16 +59,21 @@ export class AuthService {
     return !!currentUser && !!currentUser.token;
   }
 
-  private getUserFromStorage(): User | null {
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
-      try {
-        return JSON.parse(storedUser);
-      } catch (e) {
-        localStorage.removeItem('currentUser');
-        return null;
-      }
-    }
-    return null;
+  getCurrentUser(): Observable<User | null> {
+    return this.currentUser;
+  }
+
+  updateUserProfile(updatedProfile: User, profileImage?: File | null): Observable<User> {
+    console.log('Updating profile:', updatedProfile);
+
+    this.currentUserSubject.next(updatedProfile);
+    localStorage.setItem('currentUser', JSON.stringify(updatedProfile));
+
+    return of(updatedProfile);
+  }
+
+  private getUserFromLocalStorage(): User | null {
+    const userJson = localStorage.getItem('currentUser');
+    return userJson ? JSON.parse(userJson) : null;
   }
 }

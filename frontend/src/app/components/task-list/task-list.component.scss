@@ -1,0 +1,137 @@
+/* filepath: /Users/thirza/Library/CloudStorage/OneDrive-AvansHogeschool/Jaar 3/Advanced Programming/TaskTrackr/frontend/src/app/components/task-list/task-list.component.scss */
+@import '../../../styles/theme-variables';
+
+.task-list-container {
+  margin-top: $spacing-lg;
+}
+
+.filter-controls {
+  display: flex;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-lg;
+  background-color: $card-background;
+  border-radius: $border-radius-md;
+  padding: $spacing-sm;
+  box-shadow: $card-shadow;
+
+  button {
+    border-radius: $border-radius-sm;
+    padding: $spacing-sm $spacing-lg;
+    
+    &.active {
+      background-color: rgba($primary-color, 0.1);
+      color: $primary-color;
+      font-weight: bold;
+    }
+  }
+}
+
+.error-message {
+  background-color: rgba($danger-color, 0.1);
+  color: $danger-color;
+  padding: $spacing-md;
+  border-radius: $border-radius-md;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-lg;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  padding: $spacing-xl 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: $spacing-xl 0;
+  color: $text-muted;
+  background-color: $card-background;
+  border-radius: $border-radius-md;
+  box-shadow: $card-shadow;
+  margin: $spacing-xl 0;
+  padding: $spacing-xl;
+
+  mat-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    margin-bottom: $spacing-md;
+    opacity: 0.5;
+  }
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.task-card {
+  border-radius: $border-radius-md;
+  background-color: $card-background;
+  padding: $spacing-sm;
+  transition: box-shadow $transition-speed ease, transform $transition-speed ease;
+
+  &:hover {
+    box-shadow: $elevated-shadow;
+    transform: translateY(-2px);
+  }
+}
+
+.task-card-content {
+  padding: $spacing-md;
+}
+
+.task-header {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+
+  h3 {
+    flex: 1;
+    margin: 0;
+    font-size: $font-size-lg;
+    
+    &.completed {
+      text-decoration: line-through;
+      color: $text-muted;
+    }
+  }
+}
+
+.task-description {
+  margin: $spacing-sm 0 $spacing-md 36px;
+  color: $text-secondary;
+}
+
+.task-meta {
+  margin-left: 36px;
+  display: flex;
+  justify-content: space-between;
+  font-size: $font-size-sm;
+  color: $text-muted;
+}
+
+.task-priority {
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: $border-radius-sm;
+  padding: 2px 6px;
+  
+  &.priority-low {
+    background-color: rgba($success-color, 0.1);
+    color: $success-color;
+  }
+  
+  &.priority-medium {
+    background-color: rgba($warning-color, 0.1);
+    color: $warning-color;
+  }
+  
+  &.priority-high {
+    background-color: rgba($danger-color, 0.1);
+    color: $danger-color;
+  }
+}

@@ -1,0 +1,35 @@
+/* filepath: /Users/thirza/Library/CloudStorage/OneDrive-AvansHogeschool/Jaar 3/Advanced Programming/TaskTrackr/frontend/src/app/pages/tasks-page/tasks-page.component.scss */
+// Import using correct path
+@import '../../../styles/theme-variables';
+
+.tasks-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+}
+
+h1 {
+  margin-bottom: $spacing-xs;
+  color: $text-primary;
+}
+
+.subtitle {
+  color: $text-secondary;
+  margin-bottom: $spacing-lg;
+}
+
+.add-task-container {
+  margin-bottom: $spacing-xl;
+  display: flex;
+  justify-content: flex-end;
+  
+  button {
+    background-color: $primary-color;
+    color: white;
+    padding: $spacing-sm $spacing-lg;
+    
+    mat-icon {
+      margin-right: $spacing-sm;
+    }
+  }
+}

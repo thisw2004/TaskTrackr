@@ -1,0 +1,101 @@
+/* filepath: /Users/thirza/Library/CloudStorage/OneDrive-AvansHogeschool/Jaar 3/Advanced Programming/TaskTrackr/frontend/src/styles.scss */
+@import 'styles/theme-variables';
+
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: $font-family;
+  background-color: $background-color;
+  color: $text-primary;
+  height: 100%;
+}
+
+// Consistent card styling
+.app-card {
+  background-color: $card-background;
+  border-radius: $border-radius-md;
+  box-shadow: $card-shadow;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-lg;
+  transition: box-shadow $transition-speed ease;
+  
+  &:hover {
+    box-shadow: $elevated-shadow;
+  }
+}
+
+// Form styling
+.form-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: $spacing-xl;
+  background-color: $card-background;
+  border-radius: $border-radius-md;
+  box-shadow: $card-shadow;
+}
+
+// Page container
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-lg;
+}
+
+// Section headings
+h1 {
+  font-size: $font-size-xxl;
+  margin-bottom: $spacing-md;
+  font-weight: 500;
+}
+
+h2 {
+  font-size: $font-size-xl;
+  margin-bottom: $spacing-md;
+  font-weight: 500;
+}
+
+h3 {
+  font-size: $font-size-lg;
+  margin-bottom: $spacing-sm;
+  font-weight: 500;
+}
+
+// Standard text
+p {
+  font-size: $font-size-md;
+  line-height: 1.5;
+  color: $text-secondary;
+  margin-bottom: $spacing-md;
+}
+
+// Custom Material styling overrides
+.mat-card {
+  border-radius: $border-radius-md !important;
+  box-shadow: $card-shadow !important;
+  
+  &:hover {
+    box-shadow: $elevated-shadow !important;
+  }
+}
+
+.mat-toolbar.mat-primary {
+  background-color: $primary-color;
+}
+
+// Button styling
+.mat-raised-button.mat-primary {
+  background-color: $primary-color;
+}
+
+.mat-raised-button.mat-accent {
+  background-color: $secondary-color;
+}
+
+// Form field styling
+.mat-form-field {
+  width: 100%;
+  margin-bottom: $spacing-md;
+}

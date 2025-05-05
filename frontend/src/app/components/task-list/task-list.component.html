@@ -1,1 +1,174 @@
-<p>task-list works!</p>
+<div class="task-list-container">
+  <!-- Filter controls -->
+  <div class="filter-controls">
+    <button mat-button [class.active]="filterStatus === 'all'" (click)="setFilter('all')">
+      All
+    </button>
+    <button mat-button [class.active]="filterStatus === 'active'" (click)="setFilter('active')">
+      Active
+    </button>
+    <button mat-button [class.active]="filterStatus === 'completed'" (click)="setFilter('completed')">
+      Completed
+    </button>
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+    <button mat-icon-button (click)="errorMessage = ''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <!-- Loading indicator -->
+  <div *ngIf="loading" class="loading-spinner">
+    <mat-spinner diameter="40"></mat-spinner>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && getFilteredTasks().length === 0" class="empty-state">
+    <mat-icon>task</mat-icon>
+    <p>No {{ filterStatus !== 'all' ? filterStatus : '' }} tasks found.</p>
+  </div>
+
+  <!-- Task list -->
+  <div class="task-list">
+    <mat-card *ngFor="let task of getFilteredTasks()" class="task-card">
+      <mat-card-content class="task-card-content">
+        <div class="task-header">
+          <mat-checkbox
+            [checked]="task.completed"
+            (change)="toggleTaskStatus(task)"
+            color="primary">
+          </mat-checkbox>
+          <h3 [class.completed]="task.completed">{{ task.title }}</h3>
+          <button mat-icon-button (click)="deleteTask(task)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <p class="task-description" *ngIf="task.description">{{ task.description }}</p>
+        <div class="task-meta">
+          <span class="task-date">Due: {{ task.dueDate | date:'medium' }}</span>
+          <span class="task-priority" [class]="'priority-' + task.priority">
+            {{ task.priority }}
+          </span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<style>
+.task-list-container {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.filter-controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+
+  button.active {
+    background-color: rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+  }
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 0;
+  color: #757575;
+
+  mat-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-card {
+  transition: box-shadow 0.3s ease;
+
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.task-card-content {
+  padding: 8px;
+}
+
+.task-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  h3 {
+    flex: 1;
+    margin: 0;
+    
+    &.completed {
+      text-decoration: line-through;
+      color: #757575;
+    }
+  }
+}
+
+.task-description {
+  margin: 8px 0 12px 36px;
+  color: #616161;
+}
+
+.task-meta {
+  margin-left: 36px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #757575;
+}
+
+.task-priority {
+  font-weight: bold;
+  text-transform: uppercase;
+  
+  &.priority-low {
+    color: #2e7d32;
+  }
+  
+  &.priority-medium {
+    color: #f57c00;
+  }
+  
+  &.priority-high {
+    color: #c62828;
+  }
+}
+</style>
