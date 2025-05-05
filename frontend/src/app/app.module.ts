@@ -1,3 +1,4 @@
+
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -20,6 +21,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatSnackBarModule } from '@angular/material/snack-bar'; // Added SnackBar module
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './pages/login/login.component';
@@ -28,6 +33,9 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { TasksPageComponent } from './pages/tasks-page/tasks-page.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { SettingsComponent } from './pages/settings/settings.component';
+import { TaskFormDialogComponent } from './components/task-form-dialog/task-form-dialog.component';
+import { ApiDocsComponent } from './pages/api-docs/api-docs.component';
+import { TaskDialogComponent } from './components/task-dialog/task-dialog.component';
 
 import { AuthGuard } from './guards/auth.guard';
 import { NoAuthGuard } from './guards/no-auth.guard';
@@ -39,6 +47,7 @@ import { TaskListComponent } from './components/task-list/task-list.component';
 // Services
 import { AuthService } from './services/auth.service';
 import { TaskService } from './services/task.service';
+import { TaskEditDialogComponent } from './components/task-edit-dialog/task-edit-dialog.component';
 
 const routes: Routes = [
   // Default route - redirect to dashboard if authenticated, otherwise login
@@ -81,6 +90,10 @@ const routes: Routes = [
       {
         path: 'settings',
         component: SettingsComponent
+      },
+      {
+        path: 'api-docs',
+        component: ApiDocsComponent
       }
     ]
   },
@@ -99,6 +112,10 @@ const routes: Routes = [
     TasksPageComponent,
     ProfileComponent,
     SettingsComponent,
+    TaskFormDialogComponent,
+    ApiDocsComponent,
+    TaskDialogComponent,
+    TaskEditDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -121,6 +138,10 @@ const routes: Routes = [
     MatSlideToggleModule,
     MatSelectModule,
     MatDividerModule,
+    MatDialogModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSnackBarModule, // Add SnackBar module here
     RouterModule.forRoot(routes)
   ],
   providers: [

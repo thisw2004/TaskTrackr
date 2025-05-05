@@ -1,19 +1,27 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { TaskService } from '../../services/task.service';
-import { Task } from '../../models/task.model';
+import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
+import { TaskEditDialogComponent } from '../task-edit-dialog/task-edit-dialog.component';
 
 @Component({
   selector: 'app-task-list',
   templateUrl: './task-list.component.html',
-  styleUrls: ['./task-list.component.scss']
+  styleUrls: ['./task-list.component.css']
 })
 export class TaskListComponent implements OnInit {
-  tasks: Task[] = [];
-  loading: boolean = true;
+  tasks: any[] = [];
+  loading: boolean = false;
+  error: string | null = null;
   errorMessage: string = '';
   filterStatus: 'all' | 'active' | 'completed' = 'all';
 
-  constructor(private taskService: TaskService) { }
+  constructor(
+    private taskService: TaskService,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
+  ) { }
 
   ngOnInit(): void {
     this.loadTasks();
@@ -21,20 +29,27 @@ export class TaskListComponent implements OnInit {
 
   loadTasks(): void {
     this.loading = true;
-    this.taskService.getTasks().subscribe(
-      (tasks) => {
-        this.tasks = tasks;
+    this.error = null;
+    
+    this.taskService.getTasks().subscribe({
+      next: (data) => {
+        this.tasks = data;
         this.loading = false;
       },
-      (error) => {
-        this.errorMessage = 'Failed to load tasks. Please try again.';
-        console.error('Error loading tasks:', error);
+      error: (err) => {
+        console.error('Error loading tasks:', err);
+        this.errorMessage = 'Unable to load tasks. Please try again later.';
+        this.error = this.errorMessage;
         this.loading = false;
       }
-    );
+    });
   }
 
-  getFilteredTasks(): Task[] {
+  setFilter(status: 'all' | 'active' | 'completed'): void {
+    this.filterStatus = status;
+  }
+
+  getFilteredTasks(): any[] {
     switch (this.filterStatus) {
       case 'active':
         return this.tasks.filter(task => !task.completed);
@@ -45,36 +60,113 @@ export class TaskListComponent implements OnInit {
     }
   }
 
-  toggleTaskStatus(task: Task): void {
-    task.completed = !task.completed;
-    this.taskService.updateTask(task.id, task).subscribe(
-      () => {
-        // Task updated successfully
-      },
-      (error) => {
-        // Revert the change if the update fails
+  toggleTaskStatus(task: any): void {
+    const updatedTask = { ...task, completed: !task.completed };
+    this.taskService.updateTask(updatedTask).subscribe({
+      next: () => {
         task.completed = !task.completed;
-        this.errorMessage = 'Failed to update task status. Please try again.';
-        console.error('Error updating task:', error);
+      },
+      error: (err) => {
+        console.error('Error updating task status:', err);
+        this.errorMessage = 'Failed to update task. Please try again.';
       }
-    );
+    });
   }
 
-  deleteTask(task: Task): void {
+  toggleComplete(task: any): void {
+    this.toggleTaskStatus(task);
+  }
+
+  addTask(): void {
+    console.log('Add new task called');
+    
+    const dialogRef = this.dialog.open(TaskDialogComponent, {
+      width: '500px',
+      data: { title: '', description: '', dueDate: new Date() }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.taskService.addTask(result).subscribe({
+          next: (newTask) => {
+            console.log('Task added successfully', newTask);
+            this.tasks.push(newTask);
+            this.errorMessage = '';
+          },
+          error: (err) => {
+            console.error('Error adding task:', err);
+            this.errorMessage = 'Failed to add task. Please try again.';
+          }
+        });
+      }
+    });
+  }
+
+  editTask(task: any): void {
+    const taskToEdit = { 
+      ...task,
+      dueDate: task.deadline 
+    };
+    
+    const dialogRef = this.dialog.open(TaskDialogComponent, {
+      width: '500px',
+      data: taskToEdit
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Preserve the original ID
+        result._id = task._id;
+        
+        this.taskService.updateTask(result).subscribe({
+          next: (updatedTask) => {
+            // Explicitly set the text color properties
+            const mergedTask = {
+              ...updatedTask,
+              completed: updatedTask.completed || task.completed // Preserve completed state
+            };
+            
+            const index = this.tasks.findIndex(t => t._id === task._id);
+            if (index !== -1) {
+              this.tasks[index] = mergedTask;
+              
+              // Force refresh of the task list
+              this.tasks = [...this.tasks];
+            }
+            
+            this.snackBar.open('Task updated successfully', 'Close', { duration: 3000 });
+          },
+          error: (err) => {
+            console.error('Error updating task:', err);
+            this.snackBar.open('Failed to update task', 'Close', { duration: 3000 });
+          }
+        });
+      }
+    });
+  }
+
+  deleteTask(task: any): void {
     if (confirm('Are you sure you want to delete this task?')) {
-      this.taskService.deleteTask(task.id).subscribe(
-        () => {
-          this.tasks = this.tasks.filter(t => t.id !== task.id);
+      const id = task._id; // Make sure we're using the correct ID
+      
+      console.log('Attempting to delete task:', task);
+      
+      this.taskService.deleteTask(id).subscribe({
+        next: () => {
+          console.log('Delete successful in component');
+          // Update local array to remove deleted task
+          this.tasks = this.tasks.filter(t => t._id !== id);
+          this.snackBar.open('Task deleted successfully', 'Close', { duration: 3000 });
         },
-        (error) => {
-          this.errorMessage = 'Failed to delete task. Please try again.';
-          console.error('Error deleting task:', error);
+        error: (err) => {
+          console.error('Error deleting task:', err);
+          this.snackBar.open('Failed to delete task: ' + err.message, 'Close', { duration: 3000 });
         }
-      );
+      });
     }
   }
 
-  setFilter(status: 'all' | 'active' | 'completed'): void {
-    this.filterStatus = status;
+  addNewTask(): void {
+    this.addTask();
   }
 }

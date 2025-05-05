@@ -1,42 +1,34 @@
+
 import { Injectable } from '@angular/core';
-import { 
-  HttpRequest, 
-  HttpHandler, 
-  HttpEvent, 
-  HttpInterceptor 
+import {
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpInterceptor
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-@Injectable({
-  providedIn: 'root'
-})
-export class AuthService {
-  
-  constructor() { }
-  
-  getToken(): string | null {
-    return localStorage.getItem('auth_token');
-  }
-}
+import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService) {}
 
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Get the auth token from the service
-    const authToken = this.authService.getToken();
-
-    // Clone the request and replace the original headers with
-    // cloned headers, updated with the authorization.
-    if (authToken) {
-      const authReq = request.clone({
-        headers: request.headers.set('Authorization', `Bearer ${authToken}`)
+  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    // Get the current user
+    const currentUser = this.authService.currentUserValue;
+    
+    // If user is logged in and has a token, add it to the request header
+    if (currentUser && currentUser.token) {
+      request = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${currentUser.token}`
+        }
       });
-      return next.handle(authReq);
     }
     
-    // If no token, just forward the request
+    // Log the request for debugging (you can remove this later)
+    console.debug('Intercepted request:', request.url, 'with auth:', !!currentUser?.token);
+    
     return next.handle(request);
   }
 }

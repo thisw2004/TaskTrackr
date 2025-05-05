@@ -1,0 +1,62 @@
+<div class="task-form-dialog">
+  <h2 mat-dialog-title>{{ dialogTitle }}</h2>
+  
+  <mat-dialog-content>
+    <form [formGroup]="taskForm">
+      <div class="form-group">
+        <mat-form-field appearance="outline">
+          <mat-label>Task Title</mat-label>
+          <input matInput formControlName="title" placeholder="Enter task title">
+          <mat-error *ngIf="taskForm.get('title')?.hasError('required')">
+            Title is required
+          </mat-error>
+          <mat-error *ngIf="taskForm.get('title')?.hasError('minlength')">
+            Title must be at least 3 characters
+          </mat-error>
+        </mat-form-field>
+      </div>
+      
+      <div class="form-group">
+        <mat-form-field appearance="outline">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" placeholder="Enter task description" rows="3"></textarea>
+        </mat-form-field>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group form-col">
+          <mat-form-field appearance="outline">
+            <mat-label>Priority</mat-label>
+            <mat-select formControlName="priority">
+              <mat-option *ngFor="let p of priorities" [value]="p.value">
+                {{ p.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        
+        <div class="form-group form-col">
+          <mat-form-field appearance="outline">
+            <mat-label>Due Date</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="dueDate">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+      
+      <div class="form-group" *ngIf="isEditMode">
+        <mat-checkbox formControlName="completed">
+          Mark as completed
+        </mat-checkbox>
+      </div>
+    </form>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="taskForm.invalid">
+      {{ isEditMode ? 'Update Task' : 'Add Task' }}
+    </button>
+  </mat-dialog-actions>
+</div>

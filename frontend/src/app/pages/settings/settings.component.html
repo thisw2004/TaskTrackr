@@ -1,70 +1,94 @@
 <div class="settings-container">
   <h1>Settings</h1>
-  <p class="subtitle">Configure your TaskTrackr preferences</p>
+  <p class="subtitle">Customize your TaskTrackr experience</p>
+
+  <!-- Regular Settings -->
+  <div class="card-container settings-card">
+    <div class="card-header">
+      <h2>User Preferences</h2>
+    </div>
+    
+    <!-- User settings content -->
+    <div class="setting-item">
+      <div class="setting-description">
+        <h3>Theme</h3>
+        <p>Choose between light and dark theme</p>
+      </div>
+      <mat-slide-toggle color="primary">Dark Mode</mat-slide-toggle>
+    </div>
+
+    <mat-divider></mat-divider>
+    
+    <div class="setting-item">
+      <div class="setting-description">
+        <h3>Notifications</h3>
+        <p>Enable or disable push notifications</p>
+      </div>
+      <mat-slide-toggle color="primary" checked="true">Enable</mat-slide-toggle>
+    </div>
+  </div>
   
-  <mat-card class="settings-card">
-    <mat-card-content>
-      <h2>Appearance</h2>
-      
+  <!-- Account Settings -->
+  <div class="card-container settings-card">
+    <div class="card-header">
+      <h2>Account Settings</h2>
+    </div>
+    
+    <div class="setting-item">
+      <div class="setting-description">
+        <h3>Email Notifications</h3>
+        <p>Receive email notifications for important updates</p>
+      </div>
+      <mat-slide-toggle color="primary" checked="true">Enable</mat-slide-toggle>
+    </div>
+
+    <mat-divider></mat-divider>
+    
+    <div class="setting-item">
+      <div class="setting-description">
+        <h3>Change Password</h3>
+        <p>Update your account password</p>
+      </div>
+      <button mat-raised-button>Change</button>
+    </div>
+  </div>
+  
+  <!-- Developer Settings (Collapsible) -->
+  <div class="card-container settings-card dev-settings">
+    <div class="card-header dev-header" (click)="toggleDevSettings()">
+      <h2>Developer Settings</h2>
+      <mat-icon>{{ showDevSettings ? 'expand_less' : 'expand_more' }}</mat-icon>
+    </div>
+    
+    <!-- Developer settings content (shown only when expanded) -->
+    <div *ngIf="showDevSettings" class="dev-settings-content">
       <div class="setting-item">
         <div class="setting-description">
-          <h3>Dark Mode</h3>
-          <p>Enable dark theme for the application</p>
+          <h3>API Documentation</h3>
+          <p>View the Swagger documentation for the TaskTrackr API</p>
         </div>
-        <mat-slide-toggle [(ngModel)]="darkMode" (change)="toggleDarkMode()">
-          {{ darkMode ? 'On' : 'Off' }}
-        </mat-slide-toggle>
+        <button mat-raised-button color="primary" (click)="openSwaggerDocs()">View API Docs</button>
       </div>
       
       <mat-divider></mat-divider>
       
-      <h2>Notifications</h2>
-      
       <div class="setting-item">
         <div class="setting-description">
-          <h3>Enable Notifications</h3>
-          <p>Receive in-app notifications for tasks</p>
+          <h3>API Base URL</h3>
+          <p>Current API URL: {{ apiUrl }}</p>
         </div>
-        <mat-slide-toggle [(ngModel)]="notificationsEnabled">
-          {{ notificationsEnabled ? 'On' : 'Off' }}
-        </mat-slide-toggle>
-      </div>
-      
-      <div class="setting-item">
-        <div class="setting-description">
-          <h3>Email Notifications</h3>
-          <p>Receive task reminders via email</p>
-        </div>
-        <mat-slide-toggle [(ngModel)]="emailNotifications">
-          {{ emailNotifications ? 'On' : 'Off' }}
-        </mat-slide-toggle>
+        <button mat-button color="accent">Copy</button>
       </div>
       
       <mat-divider></mat-divider>
       
-      <h2>Language</h2>
-      
       <div class="setting-item">
         <div class="setting-description">
-          <h3>Display Language</h3>
-          <p>Select your preferred language</p>
+          <h3>Debug Mode</h3>
+          <p>Enable detailed console logging</p>
         </div>
-        <mat-form-field appearance="outline">
-          <mat-select [(ngModel)]="language">
-            <mat-option value="en">English</mat-option>
-            <mat-option value="es">Spanish</mat-option>
-            <mat-option value="fr">French</mat-option>
-            <mat-option value="de">German</mat-option>
-            <mat-option value="nl">Dutch</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <mat-slide-toggle color="primary" [(ngModel)]="debugMode">Enable</mat-slide-toggle>
       </div>
-      
-      <div class="button-container">
-        <button mat-raised-button color="primary" (click)="saveSettings()">
-          Save Settings
-        </button>
-      </div>
-    </mat-card-content>
-  </mat-card>
+    </div>
+  </div>
 </div>

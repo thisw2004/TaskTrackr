@@ -1,0 +1,22 @@
+/* filepath: /Users/thirza/Library/CloudStorage/OneDrive-AvansHogeschool/Jaar 3/Advanced Programming/TaskTrackr/frontend/src/app/components/task-form-dialog/task-form-dialog.component.scss */
+@import '../../../styles/theme-variables';
+
+.task-form-dialog {
+  min-width: 320px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.form-row {
+  display: flex;
+  gap: $spacing-md;
+  
+  @media (max-width: 500px) {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
+.form-col {
+  flex: 1;
+}

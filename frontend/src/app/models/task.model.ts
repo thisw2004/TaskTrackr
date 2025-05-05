@@ -1,11 +1,11 @@
 export interface Task {
-  id: string;
+  id?: string;
   title: string;
   description?: string;
-  completed: boolean;
-  dueDate?: Date;
   priority: 'low' | 'medium' | 'high';
-  userId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  completed: boolean;
+  dueDate?: Date | null;
+  createdAt?: Date;
+  userId?: string;
+  // We'll handle updatedAt separately since it might not be expected by the backend
 }

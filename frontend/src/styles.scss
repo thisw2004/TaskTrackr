@@ -1,9 +1,8 @@
 /* filepath: /Users/thirza/Library/CloudStorage/OneDrive-AvansHogeschool/Jaar 3/Advanced Programming/TaskTrackr/frontend/src/styles.scss */
 @import 'styles/theme-variables';
-
-/* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
+/* Global styles */
 body, html {
   margin: 0;
   padding: 0;
@@ -13,89 +12,117 @@ body, html {
   height: 100%;
 }
 
-// Consistent card styling
-.app-card {
-  background-color: $card-background;
-  border-radius: $border-radius-md;
-  box-shadow: $card-shadow;
+/* Page layout - similar to login/register pages */
+.page-container {
+  max-width: 1000px;
+  margin: 0 auto;
   padding: $spacing-lg;
-  margin-bottom: $spacing-lg;
-  transition: box-shadow $transition-speed ease;
+  display: flex;
+  flex-direction: column;
   
-  &:hover {
-    box-shadow: $elevated-shadow;
+  @media (max-width: 768px) {
+    padding: $spacing-md;
   }
 }
 
-// Form styling
-.form-container {
-  max-width: 500px;
-  margin: 0 auto;
-  padding: $spacing-xl;
+.card-container {
   background-color: $card-background;
   border-radius: $border-radius-md;
-  box-shadow: $card-shadow;
-}
-
-// Page container
-.page-container {
-  max-width: 1200px;
-  margin: 0 auto;
+  box-shadow: $shadow-md;
+  overflow: hidden;
+  margin-bottom: $spacing-lg;
   padding: $spacing-lg;
 }
 
-// Section headings
-h1 {
-  font-size: $font-size-xxl;
+.card-header {
   margin-bottom: $spacing-md;
-  font-weight: 500;
+  border-bottom: 1px solid $surface-alt;
+  padding-bottom: $spacing-md;
+  
+  h2 {
+    margin: 0;
+  }
+}
+
+/* Typography */
+h1 {
+  font-size: $font-size-xl;
+  margin-bottom: $spacing-md;
+  font-weight: $font-weight-medium;
+  color: $text-primary;
 }
 
 h2 {
-  font-size: $font-size-xl;
+  font-size: $font-size-lg;
   margin-bottom: $spacing-md;
-  font-weight: 500;
+  font-weight: $font-weight-medium;
 }
 
 h3 {
-  font-size: $font-size-lg;
+  font-size: $font-size-md;
   margin-bottom: $spacing-sm;
-  font-weight: 500;
+  font-weight: $font-weight-medium;
 }
 
-// Standard text
 p {
-  font-size: $font-size-md;
-  line-height: 1.5;
+  margin-bottom: $spacing-md;
   color: $text-secondary;
+}
+
+/* Form styling - matching login/register */
+.form-group {
   margin-bottom: $spacing-md;
 }
 
-// Custom Material styling overrides
-.mat-card {
-  border-radius: $border-radius-md !important;
-  box-shadow: $card-shadow !important;
+.mat-form-field {
+  width: 100%;
+  margin-bottom: $spacing-sm;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: $spacing-lg;
   
-  &:hover {
-    box-shadow: $elevated-shadow !important;
+  button + button {
+    margin-left: $spacing-md;
   }
 }
 
-.mat-toolbar.mat-primary {
-  background-color: $primary-color;
-}
-
-// Button styling
+/* Button overrides */
 .mat-raised-button.mat-primary {
   background-color: $primary-color;
 }
 
-.mat-raised-button.mat-accent {
-  background-color: $secondary-color;
+/* Simple utility classes */
+.text-center {
+  text-align: center;
 }
 
-// Form field styling
-.mat-form-field {
-  width: 100%;
+.mb-0 {
+  margin-bottom: 0;
+}
+
+.mb-1 {
+  margin-bottom: $spacing-sm;
+}
+
+.mb-2 {
   margin-bottom: $spacing-md;
+}
+
+.mb-3 {
+  margin-bottom: $spacing-lg;
+}
+
+.mt-1 {
+  margin-top: $spacing-sm;
+}
+
+.mt-2 {
+  margin-top: $spacing-md;
+}
+
+.mt-3 {
+  margin-top: $spacing-lg;
 }

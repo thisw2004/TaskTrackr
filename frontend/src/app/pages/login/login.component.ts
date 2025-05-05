@@ -1,75 +1,58 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['../../styles/auth.css']
 })
 export class LoginComponent implements OnInit {
-  loginForm!: FormGroup;
+  loginForm: FormGroup;
+  errorMessage = '';
+  isLoading = false;
+  hidePassword = true;
   loading = false;
-  submitted = false;
-  returnUrl: string = '/dashboard';
-  errorMessage: string = '';
-  successMessage: string = '';
 
   constructor(
-    private formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private authService: AuthService
-  ) { }
-
-  ngOnInit(): void {
-    // Initialize login form with validators
-    this.loginForm = this.formBuilder.group({
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
+  }
 
-    // Get return URL from route parameters or default to '/dashboard'
-    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/dashboard';
-
-    // Check for registration success message
-    if (this.route.snapshot.queryParams['registered'] === 'true') {
-      this.successMessage = 'Registration successful! Please login with your credentials.';
-    }
-
-    // Auto logout if already logged in
+  ngOnInit(): void {
+    // If already logged in, redirect to dashboard
     if (this.authService.isLoggedIn()) {
-      this.router.navigate([this.returnUrl]);
+      this.router.navigate(['/dashboard']);
     }
   }
 
-  // Getter for easy access to form fields
-  get f() { return this.loginForm.controls; }
-
   onSubmit(): void {
-    this.submitted = true;
-    
-    // Reset messages
-    this.errorMessage = '';
-    this.successMessage = '';
-    
-    // Stop if form is invalid
-    if (this.loginForm.invalid) {
-      return;
-    }
-
-    this.loading = true;
-    this.authService.login(this.f['email'].value, this.f['password'].value)
-      .subscribe({
+    if (this.loginForm.valid) {
+      this.isLoading = true;
+      this.errorMessage = '';
+      
+      this.authService.login(
+        this.loginForm.value.email,
+        this.loginForm.value.password
+      ).subscribe({
         next: () => {
-          this.loading = false;
-          this.router.navigate([this.returnUrl]);
+          this.router.navigate(['/dashboard']);
         },
-        error: error => {
-          this.loading = false;
-          this.errorMessage = error.error?.message || 'Login failed. Please check your credentials.';
+        error: (error) => {
+          this.isLoading = false;
+          this.errorMessage = error.message || 'Login failed. Please check your credentials and try again.';
+        },
+        complete: () => {
+          this.isLoading = false;
         }
       });
+    }
   }
 }

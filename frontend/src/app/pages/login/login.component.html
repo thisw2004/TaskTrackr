@@ -1,55 +1,46 @@
-<div class="login-container">
-  <div class="form-card">
-    <h2>Welcome Back</h2>
-    <p>Log in to manage your tasks</p>
-    
-    <div *ngIf="successMessage" class="success-message">
-      {{ successMessage }}
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>TaskTrackr</h1>
+      <p>Sign in to continue</p>
     </div>
     
-    <div *ngIf="errorMessage" class="error-message">
-      {{ errorMessage }}
-    </div>
-    
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="email">Email Address</label>
-        <input 
-          type="email" 
-          id="email" 
-          formControlName="email" 
-          placeholder="Enter your email"
-          [ngClass]="{ 'is-invalid': submitted && f['email'].errors }"
-        >
-        <div *ngIf="submitted && f['email'].errors" class="validation-error">
-          <div *ngIf="f['email'].errors['required']">Email is required</div>
-          <div *ngIf="f['email'].errors['email']">Please enter a valid email address</div>
-        </div>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <div *ngIf="errorMessage" class="auth-error">
+        {{ errorMessage }}
       </div>
       
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input 
-          type="password" 
-          id="password" 
-          formControlName="password" 
-          placeholder="Enter your password"
-          [ngClass]="{ 'is-invalid': submitted && f['password'].errors }"
-        >
-        <div *ngIf="submitted && f['password'].errors" class="validation-error">
-          <div *ngIf="f['password'].errors['required']">Password is required</div>
-        </div>
-      </div>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" placeholder="Enter your email">
+        <mat-error *ngIf="loginForm.controls['email'].hasError('required')">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="loginForm.controls['email'].hasError('email')">
+          Please enter a valid email
+        </mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Enter your password">
+        <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="loginForm.controls['password'].hasError('required')">
+          Password is required
+        </mat-error>
+      </mat-form-field>
       
       <div class="form-actions">
-        <button type="submit" [disabled]="loading">
-          <span *ngIf="loading" class="spinner"></span>
-          <span *ngIf="!loading">Log In</span>
+        <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || isLoading" class="full-width login-button">
+          <mat-spinner *ngIf="isLoading" diameter="24" class="login-spinner"></mat-spinner>
+          <span *ngIf="!isLoading">Sign In</span>
         </button>
       </div>
       
-      <div class="form-footer">
-        Don't have an account? <a routerLink="/register">Register</a>
+      <div class="auth-links">
+        <a routerLink="/register" class="register-link">Don't have an account? Sign up</a>
       </div>
     </form>
   </div>

@@ -20,13 +20,34 @@ h1 {
 .settings-card {
   background-color: $card-background;
   border-radius: $border-radius-md;
-  box-shadow: $card-shadow;
+  box-shadow: $shadow-md;
   margin-bottom: $spacing-lg;
-  transition: box-shadow $transition-speed ease;
+}
+
+.card-header {
+  margin-bottom: $spacing-md;
+  padding-bottom: $spacing-md;
+  border-bottom: 1px solid $surface-alt;
+  
+  h2 {
+    margin: 0;
+  }
+}
+
+.dev-header {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s;
   
   &:hover {
-    box-shadow: $elevated-shadow;
+    background-color: rgba(0,0,0,0.03);
   }
+}
+
+.dev-settings {
+  border-left: 3px solid $primary-color;
 }
 
 h2 {
@@ -48,9 +69,6 @@ h2 {
   
   h3 {
     margin: 0 0 $spacing-xs;
-    font-size: $font-size-md;
-    color: $text-primary;
-    font-weight: 500;
   }
   
   p {
@@ -61,15 +79,11 @@ h2 {
 }
 
 mat-divider {
-  margin: $spacing-md 0;
+  margin: 0;
 }
 
 .button-container {
-  margin-top: $spacing-xl;
+  margin-top: $spacing-lg;
   display: flex;
   justify-content: flex-end;
-  
-  button {
-    min-width: 150px;
-  }
 }

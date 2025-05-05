@@ -1,0 +1,78 @@
+/* Add this to your task styles CSS file */
+.task-item {
+  color: #333; /* Dark text color */
+  background-color: white;
+  margin-bottom: 8px;
+  padding: 15px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: relative;
+}
+
+.task-title {
+  font-weight: 600;
+  font-size: 18px;
+  color: #202124; /* Almost black */
+  margin: 0 0 8px 0;
+}
+
+.task-description {
+  color: #5f6368; /* Dark gray */
+  margin: 0;
+}
+
+/* Add hover effect for better UX */
+.task-item:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* For selected or checked tasks */
+.task-item.selected,
+.task-item.completed {
+  background-color: #f1f3f4;
+}
+
+/* Add strikethrough for completed tasks */
+.task-item.completed .task-title,
+.task-item.completed .task-description {
+  text-decoration: line-through;
+  color: #70757a !important;
+}
+
+/* Make completed tasks visually distinct */
+.task-item.completed {
+  opacity: 0.8;
+  background-color: #f8f9fa;
+  border-left: 3px solid #34a853;
+}
+
+/* Task controls (buttons) */
+.task-controls {
+  display: flex;
+  gap: 8px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+/* Ensure proper spacing for checkbox and title */
+.task-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+/* Add these rules to ensure text is always visible */
+.task-item * {
+  color: inherit; /* Inherit from parent */
+}
+
+/* Force text color to be visible in all states */
+.task-item .task-title {
+  color: #202124 !important; /* !important to override any other styles */
+}
+
+.task-item .task-description {
+  color: #5f6368 !important;
+}

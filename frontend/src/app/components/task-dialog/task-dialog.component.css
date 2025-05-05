@@ -1,0 +1,60 @@
+:host ::ng-deep .mat-dialog-container {
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+}
+
+.form-field {
+  margin-bottom: var(--spacing-md);
+}
+
+.full-width {
+  width: 100%;
+}
+
+mat-dialog-content {
+  min-width: 350px;
+}
+
+mat-dialog-title {
+  color: var(--primary-color);
+  font-weight: 500;
+  margin-bottom: var(--spacing-md) !important;
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--divider-color);
+}
+
+mat-dialog-actions {
+  padding-top: var(--spacing-md);
+  margin-bottom: 0;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  border-radius: var(--border-radius-md);
+}
+
+button[type="submit"] {
+  background-color: var(--primary-color) !important;
+  color: var(--button-text-on-primary) !important;
+  border-radius: var(--border-radius-md);
+  font-weight: 500;
+}
+
+button[type="submit"]:hover {
+  background-color: var(--primary-hover);
+}
+
+button[type="button"] {
+  border-radius: var(--border-radius-md);
+  color: var(--primary-color);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Override any conflicting Material styles */
+::ng-deep .mat-raised-button.mat-primary {
+  background-color: var(--primary-color) !important;
+  color: var(--button-text-on-primary) !important;
+}
