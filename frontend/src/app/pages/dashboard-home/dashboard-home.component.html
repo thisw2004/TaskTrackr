@@ -1,0 +1,29 @@
+<div class="stats-container">
+  <!-- Stats Dashboard -->
+  <div class="stats-dashboard">
+    <div class="stat-card">
+      <div class="stat-title">Total Tasks</div>
+      <div class="stat-value">{{taskStats.total}}</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-title">Open Tasks</div>
+      <div class="stat-value">{{taskStats.active}}</div>
+    </div>
+    
+    <div class="stat-card">
+      <div class="stat-title">Completed Tasks</div>
+      <div class="stat-value">{{taskStats.completed}}</div>
+    </div>
+  </div>
+  
+  <!-- Loading Indicator -->
+  <div *ngIf="loading" class="loading-spinner">
+    <div class="spinner"></div>
+  </div>
+  
+  <!-- Error Message -->
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+</div>

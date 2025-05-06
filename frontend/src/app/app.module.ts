@@ -1,3 +1,4 @@
+
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -24,7 +25,6 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar'; // Added SnackBar module
-import { MatButtonToggleModule } from '@angular/material/button-toggle'; // Added ButtonToggle module
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './pages/login/login.component';
@@ -142,7 +142,6 @@ const routes: Routes = [
     MatDatepickerModule,
     MatNativeDateModule,
     MatSnackBarModule, // Add SnackBar module here
-    MatButtonToggleModule, // Add ButtonToggle module here
     RouterModule.forRoot(routes)
   ],
   providers: [
