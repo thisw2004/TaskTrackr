@@ -16,6 +16,8 @@ export class TaskListComponent implements OnInit {
   error: string | null = null;
   errorMessage: string = '';
   filterStatus: 'all' | 'active' | 'completed' = 'all';
+  searchTerm: string = '';
+  filteredTasks: any[] = [];
 
   constructor(
     private taskService: TaskService,
@@ -33,7 +35,9 @@ export class TaskListComponent implements OnInit {
     
     this.taskService.getTasks().subscribe({
       next: (data) => {
+        console.log('Tasks loaded from API:', data); // Debug log
         this.tasks = data;
+        this.applyFilter();
         this.loading = false;
       },
       error: (err) => {
@@ -47,17 +51,46 @@ export class TaskListComponent implements OnInit {
 
   setFilter(status: 'all' | 'active' | 'completed'): void {
     this.filterStatus = status;
+    this.applyFilter(); // Apply filters when filter changes
   }
 
   getFilteredTasks(): any[] {
+    let filtered: any[];
+    
     switch (this.filterStatus) {
       case 'active':
-        return this.tasks.filter(task => !task.completed);
+        filtered = this.tasks.filter(task => !task.completed);
+        break;
       case 'completed':
-        return this.tasks.filter(task => task.completed);
+        filtered = this.tasks.filter(task => task.completed);
+        break;
       default:
-        return this.tasks;
+        filtered = [...this.tasks];
     }
+    
+    this.filteredTasks = filtered; // Update filteredTasks
+    return filtered;
+  }
+
+  applyFilter(): void {
+    this.filteredTasks = this.tasks.filter(task => {
+      // Check what conditions are filtering out your tasks
+      const matchesSearch = !this.searchTerm || 
+        task.title.toLowerCase().includes(this.searchTerm.toLowerCase()) || 
+        task.description.toLowerCase().includes(this.searchTerm.toLowerCase());
+      
+      const matchesStatus = this.filterStatus === 'all' || 
+        (this.filterStatus === 'active' && !task.completed) ||
+        (this.filterStatus === 'completed' && task.completed);
+        
+      return matchesSearch && matchesStatus;
+    });
+    console.log('After filtering:', this.filteredTasks.length, 'tasks remain');
+  }
+
+  searchTasks(term: string): void {
+    this.searchTerm = term;
+    this.applyFilter();
   }
 
   toggleTaskStatus(task: any): void {
@@ -92,6 +125,7 @@ export class TaskListComponent implements OnInit {
             console.log('Task added successfully', newTask);
             this.tasks.push(newTask);
             this.errorMessage = '';
+            this.applyFilter(); // Apply filters after adding a task
           },
           error: (err) => {
             console.error('Error adding task:', err);
@@ -132,6 +166,7 @@ export class TaskListComponent implements OnInit {
               
               // Force refresh of the task list
               this.tasks = [...this.tasks];
+              this.applyFilter(); // Apply filters after editing a task
             }
             
             this.snackBar.open('Task updated successfully', 'Close', { duration: 3000 });
@@ -156,6 +191,7 @@ export class TaskListComponent implements OnInit {
           console.log('Delete successful in component');
           // Update local array to remove deleted task
           this.tasks = this.tasks.filter(t => t._id !== id);
+          this.applyFilter(); // Apply filters after deleting a task
           this.snackBar.open('Task deleted successfully', 'Close', { duration: 3000 });
         },
         error: (err) => {

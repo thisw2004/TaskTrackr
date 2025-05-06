@@ -1,0 +1,31 @@
+.task-header {
+  margin-bottom: 1.5rem;
+}
+
+.search-wrapper {
+  margin-bottom: 1rem;
+}
+
+.search-input {
+  outline: none;
+  width: 100%;
+}
+
+.clear-button {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.tabs-container {
+  border-radius: 0.375rem;
+  overflow: hidden;
+}
+
+.tab-button {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.tab-button:hover:not(.bg-gray-200) {
+  background-color: rgba(229, 231, 235, 0.5);
+}

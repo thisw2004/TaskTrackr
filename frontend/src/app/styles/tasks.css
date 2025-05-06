@@ -76,3 +76,22 @@
 .task-item .task-description {
   color: #5f6368 !important;
 }
+
+/* Add styles for search filter container */
+.task-filters {
+  margin-bottom: 20px;
+}
+
+/* Search container */
+.search-container {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.search-field {
+  width: 100%;
+}
+
+.filter-tabs {
+  margin-bottom: 16px;
+}

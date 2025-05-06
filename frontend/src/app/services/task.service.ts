@@ -15,9 +15,13 @@ export class TaskService {
 
   // Get all tasks
   getTasks(): Observable<any[]> {
+    console.log('Fetching tasks from:', this.apiUrl);
     return this.http.get<any[]>(this.apiUrl).pipe(
-      retry(1),
-      catchError(this.handleError)
+      tap(tasks => console.log('API response:', tasks)),
+      catchError(error => {
+        console.error('Error fetching tasks:', error);
+        return this.handleError(error);
+      })
     );
   }
 
