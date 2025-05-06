@@ -34,6 +34,21 @@ h1 {
   }
 }
 
+/* Add this to your component SCSS files (dashboard-home.component.scss, settings.component.scss, etc.) */
+.content-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: #333;
+}
+
 .dev-header {
   cursor: pointer;
   display: flex;

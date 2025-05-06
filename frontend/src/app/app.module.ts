@@ -1,4 +1,3 @@
-
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -30,6 +29,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { DashboardHomeComponent } from './pages/dashboard-home/dashboard-home.component';
 import { TasksPageComponent } from './pages/tasks-page/tasks-page.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { SettingsComponent } from './pages/settings/settings.component';
@@ -48,6 +48,7 @@ import { TaskListComponent } from './components/task-list/task-list.component';
 import { AuthService } from './services/auth.service';
 import { TaskService } from './services/task.service';
 import { TaskEditDialogComponent } from './components/task-edit-dialog/task-edit-dialog.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
 
 const routes: Routes = [
   // Default route - redirect to dashboard if authenticated, otherwise login
@@ -77,7 +78,7 @@ const routes: Routes = [
     children: [
       {
         path: 'dashboard',
-        component: TaskListComponent
+        component: DashboardHomeComponent  // Change from TaskListComponent to DashboardHomeComponent
       },
       {
         path: 'tasks',
@@ -108,6 +109,7 @@ const routes: Routes = [
     LoginComponent,
     RegisterComponent,
     DashboardComponent,
+    DashboardHomeComponent,
     TaskListComponent,
     TasksPageComponent,
     ProfileComponent,
@@ -116,6 +118,7 @@ const routes: Routes = [
     ApiDocsComponent,
     TaskDialogComponent,
     TaskEditDialogComponent,
+    SidebarComponent,
   ],
   imports: [
     BrowserModule,

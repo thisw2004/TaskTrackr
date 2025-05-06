@@ -1,15 +1,29 @@
-<a routerLink="/dashboard" routerLinkActive="active">
-  <mat-icon>dashboard</mat-icon> Dashboard
-</a>
-<a routerLink="/tasks" routerLinkActive="active">
-  <mat-icon>task</mat-icon> Tasks
-</a>
-<a routerLink="/profile" routerLinkActive="active">
-  <mat-icon>person</mat-icon> Profile
-</a>
-<a routerLink="/settings" routerLinkActive="active">
-  <mat-icon>settings</mat-icon> Settings
-</a>
-<a routerLink="/login" (click)="logout()">
-  <mat-icon>logout</mat-icon> Logout
-</a>
+<mat-sidenav [mode]="'side'" [opened]="isMenuOpen" class="sidenav" [class.collapsed]="!isMenuOpen">
+  <div class="sidebar-content">
+    <mat-nav-list>
+      <a mat-list-item routerLink="/dashboard" routerLinkActive="active">
+        <mat-icon>dashboard</mat-icon>
+        <span *ngIf="isMenuOpen">Dashboard</span>
+      </a>
+      <a mat-list-item routerLink="/tasks" routerLinkActive="active">
+        <mat-icon>task_alt</mat-icon>
+        <span *ngIf="isMenuOpen">Tasks</span>
+      </a>
+      <a mat-list-item routerLink="/profile" routerLinkActive="active">
+        <mat-icon>person</mat-icon>
+        <span *ngIf="isMenuOpen">Profile</span>
+      </a>
+      <a mat-list-item routerLink="/settings" routerLinkActive="active">
+        <mat-icon>settings</mat-icon>
+        <span *ngIf="isMenuOpen">Settings</span>
+      </a>
+      
+      <mat-divider></mat-divider>
+      
+      <a mat-list-item (click)="onLogout()" class="logout-item">
+        <mat-icon>exit_to_app</mat-icon>
+        <span *ngIf="isMenuOpen">Logout</span>
+      </a>
+    </mat-nav-list>
+  </div>
+</mat-sidenav>

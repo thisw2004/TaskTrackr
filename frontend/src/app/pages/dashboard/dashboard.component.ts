@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { MatSidenav } from '@angular/material/sidenav';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -6,13 +7,18 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent {
-  isMenuOpen = true;
+export class DashboardComponent implements AfterViewInit {
+  @ViewChild(MatSidenav) sidenav!: MatSidenav;
   
   constructor(private authService: AuthService) {}
   
-  toggleMenu(): void {
-    this.isMenuOpen = !this.isMenuOpen;
+  ngAfterViewInit() {
+    // Always ensure sidenav is open on initialization
+    setTimeout(() => {
+      if (this.sidenav && !this.sidenav.opened) {
+        this.sidenav.open();
+      }
+    });
   }
   
   logout(): void {

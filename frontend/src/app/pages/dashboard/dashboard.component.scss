@@ -1,7 +1,18 @@
+/* filepath: /Users/thirza/Library/CloudStorage/OneDrive-AvansHogeschool/Jaar 3/Advanced Programming/TaskTrackr/frontend/src/app/pages/dashboard/dashboard.component.scss */
 .dashboard-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  overflow: hidden;
+}
+
+/* Hide hamburger menu */
+button[mat-icon-button] .mat-icon {
+  display: none;
+}
+
+mat-toolbar {
+  z-index: 2;
 }
 
 .spacer {
@@ -10,73 +21,82 @@
 
 .sidenav-container {
   flex: 1;
+  height: calc(100% - 64px); /* Adjust for toolbar height */
 }
 
-.sidenav {
-  width: 200px;
-  transition: width 0.3s ease;
+/* Improved sidebar styles */
+mat-sidenav {
+  width: 200px !important;
+  position: relative;
+  border-right: 1px solid rgba(0, 0, 0, 0.12);
+  background-color: #f0f5ff; /* Light blue background */
+  height: 100%; /* Full height */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  mat-nav-list {
+    padding-top: 0 !important; /* Remove extra top padding */
+    
+    a.mat-list-item {
+      height: 48px;
+      
+      &.active {
+        background-color: #e0eaff;
+        font-weight: 500;
+        color: #3f51b5;
+      }
+      
+      mat-icon {
+        margin-right: 16px;
+        color: rgba(0, 0, 0, 0.54);
+      }
+      
+      &:hover {
+        background-color: #e8f0ff;
+      }
+    }
+  }
 }
 
-.sidenav.collapsed {
-  width: 60px;
+/* Content area styles */
+mat-sidenav-content {
+  margin-left: 200px !important; 
+  height: 100%;
+  overflow: auto;
+  background-color: #f5f5f5; /* Light background for content */
+  z-index: 1; /* Ensure content is visible */
 }
 
 .content {
   padding: 20px;
+  height: auto; /* Allow content to expand */
+  min-height: 100%;
+  position: relative;
+  
+  /* Debug outline - remove after fixing */
+  /* outline: 1px solid red; */
+  
+  /* Ensure text is visible */
+  color: rgba(0, 0, 0, 0.87);
+  
+  /* Fix for task text color issue */
+  ::ng-deep .task-item {
+    color: rgba(0, 0, 0, 0.87) !important;
+  }
 }
 
-.logout-item {
-  margin-top: auto;
-  color: #f44336;
+/* Make sure components inside router-outlet are visible */
+::ng-deep router-outlet + * {
+  display: block;
+  width: 100%;
 }
 
-mat-nav-list a.active {
-  background-color: rgba(0, 0, 0, 0.04);
-}
-
-/* Stats Dashboard Styles */
-.stats-container {
-  padding: 16px;
-  margin-bottom: 24px;
-}
-
-.greeting-section {
-  margin-bottom: 24px;
-  padding: 16px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.greeting-text {
-  font-size: 24px;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 8px;
-}
-
-.stats-dashboard {
-  display: flex;
-  gap: 16px;
-}
-
-.stat-card {
-  flex: 1;
-  background-color: #f5f5f5;
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.stat-title {
-  font-size: 16px;
-  color: #555;
-  margin-bottom: 8px;
-}
-
-.stat-value {
-  font-size: 32px;
-  font-weight: bold;
-  color: #333;
+/* Adjust for mobile but keep sidebar visible */
+@media (max-width: 768px) {
+  mat-sidenav {
+    width: 200px !important; /* Keep visible on mobile */
+  }
+  
+  mat-sidenav-content {
+    margin-left: 200px !important; /* Keep margin on mobile */
+  }
 }
