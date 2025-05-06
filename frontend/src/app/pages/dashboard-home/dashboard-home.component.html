@@ -1,32 +1,35 @@
-<div class="stats-container">
-  <!-- Stats Dashboard -->
-  <div class="stats-dashboard">
-    <div class="stat-square total-square">
-      <div class="stat-title">Total Tasks</div>
-      <div class="stat-value">{{taskStats.total}}</div>
-      <mat-icon class="background-icon">assessment</mat-icon>
+<div class="dashboard-container">
+  <div class="greeting-section">
+    <h1 class="greeting-text">{{ greeting }}, {{ userName }}</h1>
+    <p class="greeting-subtitle">Waar wil je vandaag aan werken?</p>
+  </div>
+
+  <div class="stats-container">
+    <div class="stat-box total-box" (click)="navigateToTasks()">
+      <div class="icon-container">
+        <i class="fas fa-tasks"></i>
+      </div>
+      <div class="stat-title">Totaal</div>
+      <div class="stat-number">{{ taskStats.total }}</div>
     </div>
     
-    <div class="stat-square active-square">
-      <div class="stat-title">Open Tasks</div>
-      <div class="stat-value">{{taskStats.active}}</div>
-      <mat-icon class="background-icon">pending_actions</mat-icon>
+    <div class="stat-box active-box" (click)="navigateToTasks()">
+      <div class="icon-container">
+        <i class="fas fa-spinner"></i>
+      </div>
+      <div class="stat-title">Actief</div>
+      <div class="stat-number">{{ taskStats.active }}</div>
     </div>
     
-    <div class="stat-square completed-square">
-      <div class="stat-title">Completed Tasks</div>
-      <div class="stat-value">{{taskStats.completed}}</div>
-      <mat-icon class="background-icon">task_alt</mat-icon>
+    <div class="stat-box completed-box" (click)="navigateToTasks()">
+      <div class="icon-container">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="stat-title">Voltooid</div>
+      <div class="stat-number">{{ taskStats.completed }}</div>
     </div>
   </div>
-  
-  <!-- Loading Indicator -->
-  <div *ngIf="loading" class="loading-spinner">
-    <div class="spinner"></div>
-  </div>
-  
-  <!-- Error Message -->
-  <div *ngIf="error" class="error-message">
-    {{ error }}
-  </div>
+
+  <div *ngIf="loading" class="loading">Loading statistics...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
 </div>

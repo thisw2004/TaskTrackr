@@ -1,7 +1,36 @@
 /* filepath: /Users/thirza/Library/CloudStorage/OneDrive-AvansHogeschool/Jaar 3/Advanced Programming/TaskTrackr/frontend/src/app/pages/dashboard-home/dashboard-home.component.scss */
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.greeting-section {
+  text-align: center;
+  margin-bottom: 40px;
+
+  .greeting-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  .greeting-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2rem;
+    color: #666;
+  }
+}
+
 .stats-container {
   margin-bottom: 30px;
   width: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .stats-dashboard {
@@ -65,12 +94,53 @@
   }
 }
 
+.stat-box {
+  flex: 1;
+  min-width: 200px;
+  cursor: pointer;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+  }
+
+  .icon-container {
+    font-size: 32px;
+    margin-bottom: 15px;
+  }
+
+  .stat-title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+
+  .stat-number {
+    font-size: 38px;
+    font-weight: bold;
+  }
+}
+
 .total-square {
   background-color: #f5f8ff;
   border: 1px solid rgba(63, 81, 181, 0.2);
 
   .background-icon {
     color: #3f51b5;
+  }
+}
+
+.total-box {
+  background: linear-gradient(135deg, #c2e9fb 0%, #a1c4fd 100%);
+  color: #2c5282;
+
+  .icon-container {
+    color: #3182ce;
   }
 }
 
@@ -83,12 +153,30 @@
   }
 }
 
+.active-box {
+  background: linear-gradient(135deg, #fad0c4 0%, #ffd1ff 100%);
+  color: #742a2a;
+
+  .icon-container {
+    color: #e53e3e;
+  }
+}
+
 .completed-square {
   background-color: #f0fff4;
   border: 1px solid rgba(76, 175, 80, 0.2);
 
   .background-icon {
     color: #4caf50;
+  }
+}
+
+.completed-box {
+  background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+  color: #22543d;
+
+  .icon-container {
+    color: #38a169;
   }
 }
 
@@ -107,6 +195,12 @@
   }
 }
 
+.loading {
+  text-align: center;
+  margin-top: 20px;
+  color: #718096;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
@@ -120,6 +214,13 @@
   background-color: #ffebee;
   border-radius: 8px;
   margin-bottom: 20px;
+}
+
+.error {
+  text-align: center;
+  margin-top: 20px;
+  color: #e53e3e;
+  font-weight: 500;
 }
 
 /* For very small screens, let the number be a bit smaller */
