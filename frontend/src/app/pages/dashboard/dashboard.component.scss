@@ -6,35 +6,35 @@
   overflow: hidden;
 }
 
-/* Hide hamburger menu */
-button[mat-icon-button] .mat-icon {
-  display: none;
-}
-
 mat-toolbar {
   z-index: 2;
+  height: 64px;
 }
 
 .spacer {
   flex: 1 1 auto;
 }
 
+/* Fixed layout container */
 .sidenav-container {
   flex: 1;
-  height: calc(100% - 64px); /* Adjust for toolbar height */
+  height: calc(100vh - 64px); /* Full height minus toolbar */
+  display: flex; /* Make it a flex container */
 }
 
 /* Improved sidebar styles */
 mat-sidenav {
   width: 200px !important;
-  position: relative;
+  min-width: 200px !important;
+  flex-shrink: 0; /* Prevent shrinking */
   border-right: 1px solid rgba(0, 0, 0, 0.12);
-  background-color: #f0f5ff; /* Light blue background */
-  height: 100%; /* Full height */
+  background-color: #f0f5ff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 2;
   
   mat-nav-list {
-    padding-top: 0 !important; /* Remove extra top padding */
+    padding-top: 0 !important;
     
     a.mat-list-item {
       height: 48px;
@@ -57,30 +57,35 @@ mat-sidenav {
   }
 }
 
-/* Content area styles */
+/* Content area styles - fixed positioning */
 mat-sidenav-content {
-  margin-left: 200px !important; 
+  flex: 1; /* Take up all remaining width */
   height: 100%;
   overflow: auto;
-  background-color: #f5f5f5; /* Light background for content */
-  z-index: 1; /* Ensure content is visible */
+  background-color: #f5f5f5;
+  margin-left: 0 !important; /* Remove margin - we're using flexbox */
+  position: relative;
 }
 
 .content {
-  padding: 20px;
-  height: auto; /* Allow content to expand */
-  min-height: 100%;
-  position: relative;
-  
-  /* Debug outline - remove after fixing */
-  /* outline: 1px solid red; */
-  
-  /* Ensure text is visible */
+  padding: 24px;
+  height: auto;
+  width: 100%;
+  box-sizing: border-box;
   color: rgba(0, 0, 0, 0.87);
   
   /* Fix for task text color issue */
   ::ng-deep .task-item {
     color: rgba(0, 0, 0, 0.87) !important;
+  }
+  
+  /* Fix margins and display for common components */
+  ::ng-deep h1, ::ng-deep h2, ::ng-deep h3 {
+    margin-top: 0;
+  }
+  
+  ::ng-deep .mat-card {
+    margin-bottom: 16px;
   }
 }
 
@@ -90,13 +95,9 @@ mat-sidenav-content {
   width: 100%;
 }
 
-/* Adjust for mobile but keep sidebar visible */
+/* Mobile adjustments */
 @media (max-width: 768px) {
-  mat-sidenav {
-    width: 200px !important; /* Keep visible on mobile */
-  }
-  
-  mat-sidenav-content {
-    margin-left: 200px !important; /* Keep margin on mobile */
+  .sidenav-container {
+    overflow-x: hidden; /* Prevent horizontal scroll */
   }
 }
