@@ -1,44 +1,44 @@
 /* filepath: /Users/thirza/Library/CloudStorage/OneDrive-AvansHogeschool/Jaar 3/Advanced Programming/TaskTrackr/frontend/src/app/pages/dashboard/dashboard.component.scss */
 .dashboard-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
-  
-  .spacer {
-    flex: 1 1 auto;
-  }
-  
-  .sidenav-container {
-    flex: 1;
-  }
-  
-  .sidenav {
-    width: 200px;
-    transition: width 0.3s ease;
-  }
-  
-  .sidenav.collapsed {
-    width: 60px;
-  }
-  
-  mat-nav-list a {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .logout-item {
-    margin-top: auto;
-    color: #f44336;
-    cursor: pointer;
-  }
-  
-  .content {
-    padding: 20px;
-  }
-  
-  .main-content {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.sidenav-container {
+  flex: 1;
+}
+
+.sidenav {
+  width: 200px;
+  transition: width 0.3s ease;
+}
+
+.sidenav.collapsed {
+  width: 60px;
+}
+
+mat-nav-list a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logout-item {
+  margin-top: auto;
+  color: #f44336;
+  cursor: pointer;
+}
+
+.content {
+  padding: 20px;
+}
+
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
