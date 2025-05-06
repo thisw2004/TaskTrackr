@@ -4,7 +4,7 @@ import { TaskService } from '../../services/task.service';
 @Component({
   selector: 'app-dashboard-home',
   templateUrl: './dashboard-home.component.html',
-  styleUrls: ['./dashboard-home.component.css']
+  styleUrls: ['./dashboard-home.component.scss']
 })
 export class DashboardHomeComponent implements OnInit {
   taskStats = {
