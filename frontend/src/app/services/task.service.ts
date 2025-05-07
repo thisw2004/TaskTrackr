@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, retry, tap } from 'rxjs/operators';
+import { catchError, retry, tap, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -53,27 +53,12 @@ export class TaskService {
   }
 
   // Update task
-  updateTask(task: any): Observable<any> {
-    const id = task._id || task.id;
-    
-    // Format task data properly for API
-    const taskData = {
-      title: task.title,
-      description: task.description,
-      deadline: task.deadline || task.dueDate,
-      priority: task.priority || 'medium',
-      completed: task.completed
-    };
-    
-    console.log('Updating task:', id, taskData);
-    
-    return this.http.put<any>(`${this.apiUrl}/${id}`, taskData).pipe(
-      tap(response => console.log('Update response:', response)),
-      catchError(error => {
-        console.error('Update error:', error);
-        return this.handleError(error);
-      })
-    );
+  updateTask(taskId: string, taskData?: any): Observable<Task> {
+    if (taskData) {
+      return this.http.put<Task>(`${this.apiUrl}/${taskId}`, taskData);
+    } else {
+      return this.http.put<Task>(`${this.apiUrl}/${taskId}`, {});
+    }
   }
 
   // Delete task
@@ -86,6 +71,21 @@ export class TaskService {
         return this.handleError(error);
       })
     );
+  }
+
+  // Add this method to your TaskService class
+  getUpcomingDeadlines(): Observable<Task[]> {
+    return this.http.get<Task[]>(`${this.apiUrl}/upcoming`);
+  }
+
+  // Search tasks
+  searchTasks(term: string): Observable<Task[]> {
+    return this.http.get<Task[]>(`${this.apiUrl}/search?q=${term}`);
+  }
+
+  // Toggle task completion
+  toggleTaskCompletion(taskId: string): Observable<Task> {
+    return this.http.patch<Task>(`${this.apiUrl}/${taskId}/toggle`, {});
   }
 
   // Error handling

@@ -1,6 +1,9 @@
 /* filepath: /Users/thirza/Library/CloudStorage/OneDrive-AvansHogeschool/Jaar 3/Advanced Programming/TaskTrackr/frontend/src/app/pages/profile/profile.component.scss */
 @import '../../../styles/theme-variables';
 
+$transition-speed: 0.3s;
+$elevated-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+
 .profile-container {
   max-width: 800px;
   margin: 0 auto;

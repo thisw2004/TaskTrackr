@@ -1,0 +1,48 @@
+<header class="app-header">
+  <div class="header-container">
+    <div class="logo">
+      <a routerLink="/">
+        <h1>TaskTrackr</h1>
+      </a>
+    </div>
+    
+    <div class="nav-toggle" (click)="toggleMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    
+    <nav [class.open]="isMenuOpen">
+      <ul class="nav-links">
+        <ng-container *ngIf="(user$ | async) as user; else unauthLinks">
+          <li><a routerLink="/dashboard" (click)="closeMenu()">Dashboard</a></li>
+          <li><a routerLink="/tasks" (click)="closeMenu()">My Tasks</a></li>
+          <li><a routerLink="/tasks/new" (click)="closeMenu()">New Task</a></li>
+          <li class="dropdown">
+            <a (click)="$event.preventDefault()">
+              {{ user.name }}
+              <span class="dropdown-icon">▼</span>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a routerLink="/profile" (click)="closeMenu()">Profile</a></li>
+              <li><a routerLink="/settings" (click)="closeMenu()">Settings</a></li>
+              <li><a (click)="logout()">Logout</a></li>
+            </ul>
+          </li>
+        </ng-container>
+        
+        <ng-template #unauthLinks>
+          <li><a routerLink="/auth/login" (click)="closeMenu()">Login</a></li>
+          <li><a routerLink="/auth/register" (click)="closeMenu()">Register</a></li>
+        </ng-template>
+        
+        <li class="dark-mode-toggle">
+          <button (click)="toggleDarkMode()">
+            <span class="light-icon">☀️</span>
+            <span class="dark-icon">🌙</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>

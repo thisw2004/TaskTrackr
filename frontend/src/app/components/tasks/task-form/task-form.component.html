@@ -1,0 +1,89 @@
+<div class="task-form-container">
+  <h2>{{ isEditMode ? 'Edit Task' : 'Create New Task' }}</h2>
+  
+  <div *ngIf="loading" class="loading">
+    <p>Loading...</p>
+  </div>
+  
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+  
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+    <div class="form-group">
+      <label for="title">Title *</label>
+      <input 
+        type="text" 
+        id="title" 
+        formControlName="title" 
+        placeholder="Task title"
+        [ngClass]="{'invalid': taskForm.get('title')?.invalid && taskForm.get('title')?.touched}"
+      >
+      <div class="error-hint" *ngIf="taskForm.get('title')?.invalid && taskForm.get('title')?.touched">
+        <span *ngIf="taskForm.get('title')?.errors?.['required']">Title is required</span>
+        <span *ngIf="taskForm.get('title')?.errors?.['maxlength']">Title cannot exceed 100 characters</span>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea 
+        id="description" 
+        formControlName="description" 
+        placeholder="Task description"
+        rows="4"
+        [ngClass]="{'invalid': taskForm.get('description')?.invalid && taskForm.get('description')?.touched}"
+      ></textarea>
+      <div class="error-hint" *ngIf="taskForm.get('description')?.invalid && taskForm.get('description')?.touched">
+        <span *ngIf="taskForm.get('description')?.errors?.['maxlength']">Description cannot exceed 1000 characters</span>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="deadline">Deadline *</label>
+      <input 
+        type="datetime-local" 
+        id="deadline" 
+        formControlName="deadline"
+        [ngClass]="{'invalid': taskForm.get('deadline')?.invalid && taskForm.get('deadline')?.touched}"
+      >
+      <div class="error-hint" *ngIf="taskForm.get('deadline')?.invalid && taskForm.get('deadline')?.touched">
+        <span *ngIf="taskForm.get('deadline')?.errors?.['required']">Deadline is required</span>
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="priority">Priority</label>
+      <select id="priority" formControlName="priority">
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select id="category" formControlName="category">
+        <option *ngFor="let category of categories" [value]="category">
+          {{ category | titlecase }}
+        </option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label>Tags</label>
+      <div class="tags-container" formArrayName="tags">
+        <div *ngFor="let tag of tagsFormArray.controls; let i = index" class="tag-input">
+          <input type="text" [formControlName]="i" placeholder="Tag">
+          <button type="button" class="remove-tag" (click)="removeTag(i)">×</button>
+        </div>
+        <button type="button" class="add-tag" (click)="addTag()">+ Add Tag</button>
+      </div>
+    </div>
+    
+    <div class="form-actions">
+      <button type="button" class="cancel-btn" routerLink="/tasks">Cancel</button>
+      <button type="submit" class="submit-btn" [disabled]="taskForm.invalid">{{ isEditMode ? 'Update Task' : 'Create Task' }}</button>
+    </div>
+  </form>
+</div>
