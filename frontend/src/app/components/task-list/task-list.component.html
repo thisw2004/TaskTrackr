@@ -37,8 +37,9 @@
   
         <!-- No Tasks Message -->
         <div *ngIf="filteredTasks.length === 0" class="empty-state">
-          <h3>No tasks found</h3>
-          <p>Create a new task or adjust your filters.</p>
+          <p *ngIf="filterStatus === 'all'">You don't have any tasks yet. Create a new task to get started.</p>
+          <p *ngIf="filterStatus === 'active'">No active tasks found. All your tasks are completed or you can create a new one.</p>
+          <p *ngIf="filterStatus === 'completed'">You don't have any completed tasks yet. Mark a task as completed to see it here.</p>
         </div>
   
         <!-- Task List with complete implementation -->
@@ -90,3 +91,4 @@
       </button>
     </div>
   </div>
+

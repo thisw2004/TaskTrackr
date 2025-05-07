@@ -9,6 +9,7 @@
 mat-toolbar {
   z-index: 2;
   height: 64px;
+  background-color: #1976d2;
 }
 
 .spacer {
@@ -88,6 +89,8 @@ mat-sidenav-content {
     margin-bottom: 16px;
   }
 }
+
+
 
 /* Make sure components inside router-outlet are visible */
 ::ng-deep router-outlet + * {

@@ -1,172 +1,402 @@
-/* filepath: /Users/thirza/Library/CloudStorage/OneDrive-AvansHogeschool/Jaar 3/Advanced Programming/TaskTrackr/frontend/src/app/components/task-list/task-list.component.scss */
-/* You can either fix the import or define all variables here */
-
-// Base colors
-$primary-color: #3f51b5;
-$card-background: #ffffff;
-$text-primary: #333333;
-$text-secondary: #666666;
-$text-muted: #999999;
-$success-color: #4caf50;
-$warning-color: #ff9800;
-$danger-color: #f44336;
-
-// Spacing
-$spacing-xs: 4px;
-$spacing-sm: 8px;
-$spacing-md: 16px;
-$spacing-lg: 24px;
-$spacing-xl: 32px;
-
-// Shadows
-$card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-$elevated-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-
-// Border radius
-$border-radius-sm: 4px;
-$border-radius-md: 8px;
-
-// Typography
-$font-size-sm: 12px;
-$font-size-md: 14px;
-$font-size-lg: 16px;
-
-// Animation
-$transition-speed: 0.3s;
-
 .task-list-container {
-  margin-top: 24px; // Using fixed value instead of variable
+  width: 100%;
 }
 
-.filter-controls {
-  display: flex;
-  gap: $spacing-sm;
-  margin-bottom: $spacing-lg;
-  background-color: $card-background;
-  border-radius: $border-radius-md;
-  padding: $spacing-sm;
-  box-shadow: $card-shadow;
+.task-list-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
 
-  button {
-    border-radius: $border-radius-sm;
-    padding: $spacing-sm $spacing-lg;
-    
-    &.active {
-      background-color: rgba($primary-color, 0.1);
-      color: $primary-color;
-      font-weight: bold;
-    }
+@media (min-width: 992px) {
+  .task-list-content {
+    grid-template-columns: 1fr 2fr;
   }
 }
 
-.error-message {
-  background-color: rgba($danger-color, 0.1);
-  color: $danger-color;
-  padding: $spacing-md;
-  border-radius: $border-radius-md;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: $spacing-lg;
+.task-form-section, .tasks-section {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+h2 {
+  margin-top: 0;
+  color: #2c3e50;
+  font-size: 20px;
+  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .loading-spinner {
   display: flex;
   justify-content: center;
-  padding: $spacing-xl 0;
+  padding: 40px 0;
 }
 
-.empty-state {
-  text-align: center;
-  padding: $spacing-xl 0;
-  color: $text-muted;
-  background-color: $card-background;
-  border-radius: $border-radius-md;
-  box-shadow: $card-shadow;
-  margin: $spacing-xl 0;
-  padding: $spacing-xl;
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 4px solid #3498db;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
 
-  mat-icon {
-    font-size: 48px;
-    height: 48px;
-    width: 48px;
-    margin-bottom: $spacing-md;
-    opacity: 0.5;
-  }
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.no-tasks {
+  color: #7f8c8d;
+  font-style: italic;
+  padding: 10px 0;
+}
+
+.task-items {
+  list-style-type: none;
+  padding: 0;
+}
+
+.task-item {
+  border: 1px solid #eaeaea;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  color: #333;
+}
+
+.task-content h3 {
+  margin-top: 0;
+  margin-bottom: 5px;
+  color: #2c3e50;
+}
+
+.task-content p {
+  margin: 5px 0;
+  color: #7f8c8d;
+}
+
+.deadline {
+  font-weight: 500;
+}
+
+.task-actions button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-left: 4px;
+}
+
+.completed .task-item {
+  background-color: #f9f9f9;
+  opacity: 0.8;
+}
+
+.task-container {
+  margin: 20px;
+  position: relative;
+  min-height: 300px;
+}
+
+.filter-buttons {
+  margin-bottom: 15px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #f5f5f5;
+  display: inline-flex;
+}
+
+.filter-buttons button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  margin-right: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: #f5f5f5;
+}
+
+.filter-buttons button:hover {
+  background-color: #e0e0e0;
+}
+
+.filter-buttons button:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.filter-buttons button:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  margin-right: 0;
+}
+
+.filter-buttons button.active {
+  background-color: #1976d2; /* Primary color - adjust to match your theme */
+  color: white;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.selected-filter {
+  font-weight: bold;
+  color: #1976d2; /* Match your app's primary color */
+  padding: 2px 8px;
+  border-radius: 4px;
+  background-color: rgba(25, 118, 210, 0.1);
 }
 
 .task-list {
   display: flex;
   flex-direction: column;
-  gap: $spacing-md;
+  gap: 12px;
 }
 
 .task-card {
-  border-radius: $border-radius-md;
-  background-color: $card-background;
-  padding: $spacing-sm;
-  transition: box-shadow $transition-speed ease, transform $transition-speed ease;
-
-  &:hover {
-    box-shadow: $elevated-shadow;
-    transform: translateY(-2px);
-  }
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-radius: 12px !important; /* Force rounded corners */
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
 }
 
-.task-card-content {
-  padding: $spacing-md;
+.task-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
+  transform: translateY(-2px);
+}
+
+.task-content {
+  display: flex;
+  align-items: center;
+}
+
+.task-title {
+  margin-left: 16px;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.completed .task-title {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.task-actions {
+  display: flex;
+  align-items: center;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+}
+
+.empty-state h3 {
+  margin-bottom: 15px;
+  color: #6c757d;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-message button {
+  border-radius: 50%;
+}
+
+.add-button {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Style for mat-checkbox to make it more rounded */
+::ng-deep .mat-checkbox-layout {
+  margin-bottom: 0;
+}
+
+::ng-deep .mat-checkbox-inner-container {
+  border-radius: 4px !important;
+}
+
+.task-dashboard {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.stats-card {
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  padding: 15px;
+  text-align: center;
+  width: 30%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.task-table {
+  width: 100%;
+  color: #333; /* Ensure text is visible */
 }
 
 .task-header {
   display: flex;
-  align-items: center;
-  gap: $spacing-md;
-
-  h3 {
-    flex: 1;
-    margin: 0;
-    font-size: $font-size-lg;
-    
-    &.completed {
-      text-decoration: line-through;
-      color: $text-muted;
-    }
-  }
+  background-color: #eee;
+  font-weight: bold;
+  padding: 10px 0;
+  border-bottom: 2px solid #ddd;
 }
 
-.task-description {
-  margin: $spacing-sm 0 $spacing-md 36px;
-  color: $text-secondary;
+.header-cell {
+  padding: 0 10px;
 }
 
-.task-meta {
-  margin-left: 36px;
+.task-row {
+  display: flex;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  color: #333; /* Ensure text is visible */
+}
+
+/* Cell width distribution */
+.status-cell { width: 10%; }
+.title-cell { width: 20%; }
+.description-cell { width: 30%; }
+.date-cell { width: 15%; }
+.deadline-cell { width: 15%; }
+.actions-cell { width: 10%; }
+
+/* Stats Dashboard */
+.stats-dashboard {
   display: flex;
   justify-content: space-between;
-  font-size: $font-size-sm;
-  color: $text-muted;
+  margin: 20px 0;
 }
 
-.task-priority {
+.stat-card {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 15px 20px;
+  width: 30%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.stat-title {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.stat-value {
+  font-size: 28px;
   font-weight: bold;
-  text-transform: uppercase;
-  border-radius: $border-radius-sm;
-  padding: 2px 6px;
-  
-  &.priority-low {
-    background-color: rgba($success-color, 0.1);
-    color: $success-color;
-  }
-  
-  &.priority-medium {
-    background-color: rgba($warning-color, 0.1);
-    color: $warning-color;
-  }
-  
-  &.priority-high {
-    background-color: rgba($danger-color, 0.1);
-    color: $danger-color;
-  }
+  color: #333;
+}
+
+/* Column headers for task list */
+.task-table-header {
+  display: flex;
+  background-color: #f0f0f0;
+  padding: 10px;
+  font-weight: bold;
+  border-radius: 4px 4px 0 0;
+  color: #333;
+  margin-top: 20px;
+}
+
+.task-header-cell {
+  padding: 8px;
+}
+
+/* Cell width distribution */
+.status-cell { 
+  width: 10%; 
+}
+.title-cell { 
+  width: 20%; 
+}
+.desc-cell { 
+  width: 30%; 
+}
+.date-cell { 
+  width: 15%; 
+}
+.deadline-cell { 
+  width: 15%; 
+}
+.actions-cell { 
+  width: 10%; 
+}
+
+/* Greeting Section */
+.greeting-section {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.greeting-text {
+  font-size: 26px;
+  font-weight: 500;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+}
+
+.greeting-subtitle {
+  font-size: 16px;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+/* Add this if you want to create a dashboard layout with greeting and stats */
+.dashboard-container {
+  margin-bottom: 30px;
 }
