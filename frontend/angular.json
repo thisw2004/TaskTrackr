@@ -24,8 +24,8 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              {"glob": "favicon.ico", "input": "src/", "output": "/"},
-              {"glob": "**/*", "input": "src/assets", "output": "/assets"}
+              "src/favicon.ico",
+              "src/assets"
             ],
             "styles": [
               "@angular/material/prebuilt-themes/deeppurple-amber.css",

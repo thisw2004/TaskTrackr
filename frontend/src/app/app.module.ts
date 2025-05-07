@@ -122,10 +122,9 @@ const routes: Routes = [
   ],
   imports: [
     BrowserModule,
-    FormsModule,
-    ReactiveFormsModule, 
     CommonModule,
-    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
     // Material Modules

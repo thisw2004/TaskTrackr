@@ -5,29 +5,19 @@ import { TaskService } from '../../services/task.service';
 import { TaskDialogComponent } from '../task-dialog/task-dialog.component';
 import { TaskEditDialogComponent } from '../task-edit-dialog/task-edit-dialog.component';
 
-// Complete the interface
-interface Task {
-  _id: string;
-  title: string;
-  description: string;
-  completed: boolean;
-  deadline?: Date;
-  dueDate?: Date;
-}
-
 @Component({
   selector: 'app-task-list',
   templateUrl: './task-list.component.html',
-  styleUrls: ['./task-list.component.scss']
+  styleUrls: ['./task-list.component.css']
 })
 export class TaskListComponent implements OnInit {
-  tasks: Task[] = [];
+  tasks: any[] = [];
   loading: boolean = false;
   error: string | null = null;
   errorMessage: string = '';
   filterStatus: 'all' | 'active' | 'completed' = 'all';
   searchTerm: string = '';
-  filteredTasks: Task[] = [];
+  filteredTasks: any[] = [];
   taskStats = {
     total: 0,
     completed: 0,
@@ -71,8 +61,8 @@ export class TaskListComponent implements OnInit {
     this.applyFilter(); // Apply filters when filter changes
   }
 
-  getFilteredTasks(): Task[] {
-    let filtered: Task[];
+  getFilteredTasks(): any[] {
+    let filtered: any[];
     
     switch (this.filterStatus) {
       case 'active':
@@ -94,7 +84,7 @@ export class TaskListComponent implements OnInit {
       // Check what conditions are filtering out your tasks
       const matchesSearch = !this.searchTerm || 
         task.title.toLowerCase().includes(this.searchTerm.toLowerCase()) || 
-        (task.description && task.description.toLowerCase().includes(this.searchTerm.toLowerCase()));
+        task.description.toLowerCase().includes(this.searchTerm.toLowerCase());
       
       const matchesStatus = this.filterStatus === 'all' || 
         (this.filterStatus === 'active' && !task.completed) ||
@@ -111,9 +101,9 @@ export class TaskListComponent implements OnInit {
     this.applyFilter();
   }
 
-  toggleTaskStatus(task: Task): void {
-    const updatedTask = { completed: !task.completed };
-    this.taskService.updateTask(task._id, updatedTask).subscribe({
+  toggleTaskStatus(task: any): void {
+    const updatedTask = { ...task, completed: !task.completed };
+    this.taskService.updateTask(updatedTask).subscribe({
       next: () => {
         task.completed = !task.completed;
         this.updateTaskStats();
@@ -125,7 +115,7 @@ export class TaskListComponent implements OnInit {
     });
   }
 
-  toggleComplete(task: Task): void {
+  toggleComplete(task: any): void {
     this.toggleTaskStatus(task);
   }
 
@@ -156,7 +146,7 @@ export class TaskListComponent implements OnInit {
     });
   }
 
-  editTask(task: Task): void {
+  editTask(task: any): void {
     const taskToEdit = { 
       ...task,
       dueDate: task.deadline 
@@ -169,26 +159,24 @@ export class TaskListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Get the ID from the original task
-        const taskId = task._id;
-        // Remove the _id from the result to avoid sending it in the payload
-        const { _id, ...taskData } = result;
+        // Preserve the original ID
+        result._id = task._id;
         
-        this.taskService.updateTask(taskId, taskData).subscribe({
+        this.taskService.updateTask(result).subscribe({
           next: (updatedTask) => {
-            // Rest of the code remains the same
-            const mergedTask: Task = {
-              ...task, // Ensure required properties (_id, title, description) are included
+            // Explicitly set the text color properties
+            const mergedTask = {
               ...updatedTask,
-              completed: 'completed' in updatedTask ? updatedTask.completed as boolean : task.completed
+              completed: updatedTask.completed || task.completed // Preserve completed state
             };
             
             const index = this.tasks.findIndex(t => t._id === task._id);
             if (index !== -1) {
               this.tasks[index] = mergedTask;
               
+              // Force refresh of the task list
               this.tasks = [...this.tasks];
-              this.applyFilter();
+              this.applyFilter(); // Apply filters after editing a task
               this.updateTaskStats();
             }
             
@@ -203,7 +191,7 @@ export class TaskListComponent implements OnInit {
     });
   }
 
-  deleteTask(task: Task): void {
+  deleteTask(task: any): void {
     if (confirm('Are you sure you want to delete this task?')) {
       const id = task._id; // Make sure we're using the correct ID
       
