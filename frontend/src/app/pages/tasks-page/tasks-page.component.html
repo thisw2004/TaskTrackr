@@ -1,7 +1,17 @@
 <div class="tasks-page-container">
   <div class="tasks-header">
     <h1>Tasks</h1>
-    <!-- Removed duplicate Add Task button -->
+    <!-- Search bar -->
+    <div class="search-container">
+      <mat-form-field appearance="outline">
+        <mat-label>Search Tasks</mat-label>
+        <input matInput type="text" [(ngModel)]="searchTerm" (keyup)="onSearchChange()" placeholder="Search by keyword...">
+        <button *ngIf="searchTerm" matSuffix mat-icon-button aria-label="Clear" (click)="clearSearch()">
+          <mat-icon>close</mat-icon>
+        </button>
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+    </div>
   </div>
 
   <app-task-list></app-task-list>

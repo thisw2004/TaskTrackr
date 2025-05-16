@@ -12,12 +12,13 @@ import { TaskEditDialogComponent } from '../task-edit-dialog/task-edit-dialog.co
 })
 export class TaskListComponent implements OnInit {
   tasks: any[] = [];
+  allTasks: any[] = [];
+  filteredTasks: any[] = [];
   loading: boolean = false;
   error: string | null = null;
   errorMessage: string = '';
   filterStatus: 'all' | 'active' | 'completed' = 'all';
   searchTerm: string = '';
-  filteredTasks: any[] = [];
   taskStats = {
     total: 0,
     completed: 0,
@@ -42,6 +43,7 @@ export class TaskListComponent implements OnInit {
       next: (data) => {
         console.log('Tasks loaded from API:', data); 
         this.tasks = data;
+        this.allTasks = [...this.tasks];
         this.filteredTasks = [...this.tasks]; // Initialize with all tasks
         this.applyFilter(); // Then apply any filters
         this.updateTaskStats();
@@ -96,6 +98,19 @@ export class TaskListComponent implements OnInit {
     this.updateTaskStats();
   }
 
+  applySearch(searchTerm: string): void {
+    if (!searchTerm || searchTerm.trim() === '') {
+      this.filteredTasks = this.allTasks;
+      return;
+    }
+
+    const searchTermLower = searchTerm.toLowerCase();
+    this.filteredTasks = this.allTasks.filter(task => 
+      task.title.toLowerCase().includes(searchTermLower) || 
+      (task.description && task.description.toLowerCase().includes(searchTermLower))
+    );
+  }
+
   searchTasks(term: string): void {
     this.searchTerm = term;
     this.applyFilter();
@@ -133,6 +148,7 @@ export class TaskListComponent implements OnInit {
           next: (newTask) => {
             console.log('Task added successfully', newTask);
             this.tasks.push(newTask);
+            this.allTasks.push(newTask);
             this.errorMessage = '';
             this.applyFilter(); // Apply filters after adding a task
             this.updateTaskStats();
@@ -176,6 +192,7 @@ export class TaskListComponent implements OnInit {
               
               // Force refresh of the task list
               this.tasks = [...this.tasks];
+              this.allTasks = [...this.tasks];
               this.applyFilter(); // Apply filters after editing a task
               this.updateTaskStats();
             }
@@ -202,6 +219,7 @@ export class TaskListComponent implements OnInit {
           console.log('Delete successful in component');
           // Update local array to remove deleted task
           this.tasks = this.tasks.filter(t => t._id !== id);
+          this.allTasks = this.allTasks.filter(t => t._id !== id);
           this.applyFilter(); // Apply filters after deleting a task
           this.updateTaskStats();
           this.snackBar.open('Task deleted successfully', 'Close', { duration: 3000 });

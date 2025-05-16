@@ -4,11 +4,12 @@ import { TaskListComponent } from '../../components/task-list/task-list.componen
 @Component({
   selector: 'app-tasks-page',
   templateUrl: './tasks-page.component.html',
-  styleUrls: ['./tasks-page.component.css']
+  styleUrls: ['./tasks-page.component.scss']
 })
 export class TasksPageComponent implements OnInit, AfterViewInit {
   @ViewChild(TaskListComponent) taskList!: TaskListComponent;
   viewInitialized = false;
+  searchTerm: string = ''; // Add this property
 
   constructor() { }
 
@@ -37,5 +38,18 @@ export class TasksPageComponent implements OnInit, AfterViewInit {
   
   addNewTask(): void {
     this.onAddTaskClick();
+  }
+
+  onSearchChange(): void {
+    if (this.viewInitialized && this.taskList) {
+      this.taskList.applySearch(this.searchTerm);
+    }
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    if (this.viewInitialized && this.taskList) {
+      this.taskList.applySearch('');
+    }
   }
 }
