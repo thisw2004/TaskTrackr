@@ -9,7 +9,7 @@
     </div>
     
     <!-- User settings content -->
-    <div class="setting-item">
+    <!-- <div class="setting-item">
       <div class="setting-description">
         <h3>Theme</h3>
         <p>Choose between light and dark theme</p>
@@ -26,9 +26,9 @@
       </div>
       <mat-slide-toggle color="primary" checked="true">Enable</mat-slide-toggle>
     </div>
-  </div>
+  </div> -->
   
-  <!-- Account Settings -->
+  <!-- Account Settings
   <div class="card-container settings-card">
     <div class="card-header">
       <h2>Account Settings</h2>
@@ -52,7 +52,7 @@
       <button mat-raised-button>Change</button>
     </div>
   </div>
-  
+   -->
   <!-- Developer Settings (Collapsible) -->
   <div class="card-container settings-card dev-settings">
     <div class="card-header dev-header" (click)="toggleDevSettings()">
@@ -80,15 +80,6 @@
         <button mat-button color="accent">Copy</button>
       </div>
       
-      <mat-divider></mat-divider>
-      
-      <div class="setting-item">
-        <div class="setting-description">
-          <h3>Debug Mode</h3>
-          <p>Enable detailed console logging</p>
-        </div>
-        <mat-slide-toggle color="primary" [(ngModel)]="debugMode">Enable</mat-slide-toggle>
-      </div>
     </div>
   </div>
 </div>
