@@ -7,12 +7,14 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  styleUrls: ['../../styles/auth.css']
 })
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
   errorMessage: string = '';
   loading: boolean = false;
+  hidePassword = true;
+
   
   constructor(
     private formBuilder: FormBuilder,

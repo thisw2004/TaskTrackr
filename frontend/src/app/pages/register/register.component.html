@@ -10,27 +10,28 @@
         {{ errorMessage }}
       </div>
       
-      <div class="name-fields">
-        <mat-form-field appearance="outline">
-          <mat-label>First Name</mat-label>
-          <input matInput formControlName="firstName" placeholder="Enter your first name">
-          <mat-error *ngIf="registerForm.controls['firstName'].hasError('required')">
-            First name is required
-          </mat-error>
-        </mat-form-field>
-        
-        <mat-form-field appearance="outline">
-          <mat-label>Last Name</mat-label>
-          <input matInput formControlName="lastName" placeholder="Enter your last name">
-          <mat-error *ngIf="registerForm.controls['lastName'].hasError('required')">
-            Last name is required
-          </mat-error>
-        </mat-form-field>
-      </div>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>First Name</mat-label>
+        <input style="width: 100%; max-width: 20rem; min-width: 12rem; height: clamp(2.5rem, 4vw, 3.5rem);" 
+        matInput formControlName="firstName" placeholder="Enter your first name">
+        <mat-error *ngIf="registerForm.controls['firstName'].hasError('required')">
+          First name is required
+        </mat-error>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Last Name</mat-label>
+        <input style="width: 100%; max-width: 20rem; min-width: 12rem; height: clamp(2.5rem, 4vw, 3.5rem);" 
+        matInput formControlName="lastName" placeholder="Enter your last name">
+        <mat-error *ngIf="registerForm.controls['lastName'].hasError('required')">
+          Last name is required
+        </mat-error>
+      </mat-form-field>
       
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Email</mat-label>
-        <input matInput formControlName="email" type="email" placeholder="Enter your email">
+        <input style="width: 100%; max-width: 20rem; min-width: 12rem; height: clamp(2.5rem, 4vw, 3.5rem);" 
+         matInput formControlName="email" type="email" placeholder="Enter your email">
         <mat-error *ngIf="registerForm.controls['email'].hasError('required')">
           Email is required
         </mat-error>
@@ -39,9 +40,13 @@
         </mat-error>
       </mat-form-field>
       
-      <mat-form-field appearance="outline" class="full-width">
+      <mat-form-field appearance="outline" class="full-width" style="margin-top:1px !important">
         <mat-label>Password</mat-label>
-        <input matInput formControlName="password" type="password" placeholder="Enter your password">
+        <input style="width: 100%; max-width: 20rem; min-width: 12rem; height: clamp(2.5rem, 4vw, 3.5rem);" 
+        matInput formControlName="password" [type]="hidePassword ? 'password' : 'text'" placeholder="Enter your password">
+        <button mat-icon-button matSuffix type="button" (click)="hidePassword = !hidePassword">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
         <mat-error *ngIf="registerForm.controls['password'].hasError('required')">
           Password is required
         </mat-error>
@@ -51,9 +56,9 @@
       </mat-form-field>
       
       <div class="form-actions">
-        <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid || loading" class="full-width register-button">
+        <button mat-raised-button style="background-color:#1B72E8" type="submit" [disabled]="registerForm.invalid || loading" class="full-width register-button">
           <mat-spinner *ngIf="loading" diameter="24" class="register-spinner"></mat-spinner>
-          <span *ngIf="!loading">Sign Up</span>
+          <span>Sign Up</span>
         </button>
       </div>
       
