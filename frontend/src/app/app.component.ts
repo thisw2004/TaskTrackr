@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { DeadlineService } from './services/deadline.service';
 
 @Component({
   selector: 'app-root',
@@ -19,24 +20,33 @@ export class AppComponent implements OnInit {
   
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private deadlineService: DeadlineService
   ) {
-    // Set minimum date to today for deadline validation
     const today = new Date();
     this.minDate = today.toISOString().split('T')[0];
   }
 
   ngOnInit() {
-    // Check authentication status on init and when it changes
+    // Check if there's any auth or redirect logic here
+    if (!this.authService.isAuthenticated()) {
+      this.router.navigate(['/login']);
+    }
+
+    // Check authentication status
     this.authService.currentUser.subscribe(user => {
       this.isLoggedIn = !!user;
+      
+      // Only check deadlines if the user is logged in
+      if (this.isLoggedIn) {
+        this.deadlineService.checkUpcomingDeadlines();
+      }
     });
     
     // Check authentication on route changes
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
-      // If not on login or register pages and not logged in, redirect to login
       if (!this.isLoggedIn && 
           !this.router.url.includes('/login') && 
           !this.router.url.includes('/register')) {

@@ -3,11 +3,21 @@
     <div class="tasks-container">
       <!-- Search and Filter Controls -->
       <div class="controls-row">
-        <!-- Your search input here -->
+        <!-- Status filters -->
         <div class="filter-buttons">
+          <span class="filter-label"><b>Status:</b></span>
           <button (click)="setFilter('all')" [class.active]="filterStatus === 'all'">All</button>
           <button (click)="setFilter('active')" [class.active]="filterStatus === 'active'">Active</button>
           <button (click)="setFilter('completed')" [class.active]="filterStatus === 'completed'">Completed</button>
+        </div>
+        
+        <!-- Priority filters -->
+        <div class="priority-filters">
+          <span class="filter-label"><b>Priority:</b></span>
+          <button (click)="setPriorityFilter('all')" [class.active]="priorityFilter === 'all'">All</button>
+          <button (click)="setPriorityFilter('low')" [class.active]="priorityFilter === 'low'" class="priority-low">Low</button>
+          <button (click)="setPriorityFilter('medium')" [class.active]="priorityFilter === 'medium'" class="priority-medium">Medium</button>
+          <button (click)="setPriorityFilter('high')" [class.active]="priorityFilter === 'high'" class="priority-high">High</button>
         </div>
       </div>
   
@@ -32,6 +42,7 @@
           <div class="task-header-cell desc-cell">Description</div>
           <div class="task-header-cell date-cell">Created</div>
           <div class="task-header-cell deadline-cell">Deadline</div>
+          <div class="task-header-cell priority-cell">Priority</div>
           <div class="task-header-cell actions-cell">Actions</div>
         </div>
   
@@ -65,12 +76,22 @@
   
           <!-- Created Date Column -->
           <div class="task-cell date-cell">
-            {{task.created | date:'MMM d, y'}}
+            <span *ngIf="task.createdAt">{{task.createdAt | date:'dd/MM/yyyy'}}</span>
+            <span *ngIf="!task.createdAt">-</span>
           </div>
   
           <!-- Deadline Column -->
           <div class="task-cell deadline-cell">
-            {{task.deadline | date:'MMM d, y'}}
+            <span *ngIf="task.deadline">{{task.deadline | date:'dd/MM/yyyy'}}</span>
+            <span *ngIf="!task.deadline">-</span>
+          </div>
+
+          <!-- Priority Column -->
+          <div class="task-cell priority-cell">
+            <span class="priority-badge" *ngIf="task.priority" [ngClass]="'priority-' + task.priority">
+              {{task.priority}}
+            </span>
+            <span *ngIf="!task.priority">-</span>
           </div>
   
           <!-- Actions Column -->
@@ -84,7 +105,7 @@
           </div>
         </div>
       </div>
-  
+      
       <!-- Add Task Button -->
       <button mat-fab class="add-button" (click)="addNewTask()">
         <mat-icon>add</mat-icon>

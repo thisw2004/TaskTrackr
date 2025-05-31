@@ -72,6 +72,27 @@ export class AuthService {
     return of(updatedProfile);
   }
 
+  /**
+   * Check if the user is authenticated
+   */
+  isAuthenticated(): boolean {
+    // Implement logic to check authentication status
+    // For example, check if a valid token exists in localStorage
+    const token = localStorage.getItem('authToken');
+    return !!token; // Return true if token exists, otherwise false
+  }
+
+  requestPasswordReset(email: string) {
+    return this.http.post<any>(`${this.apiUrl}/auth/request-reset`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string) {
+    return this.http.post<any>(`${this.apiUrl}/auth/reset-password`, { 
+      token, 
+      newPassword 
+    });
+  }
+
   private getUserFromLocalStorage(): User | null {
     const userJson = localStorage.getItem('currentUser');
     return userJson ? JSON.parse(userJson) : null;

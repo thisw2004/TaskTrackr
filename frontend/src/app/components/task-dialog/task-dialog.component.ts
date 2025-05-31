@@ -18,15 +18,21 @@ export class TaskDialogComponent implements OnInit {
   ) {
     // Create form with validation
     this.taskForm = this.fb.group({
-      title: [data.title || '', Validators.required],
-      description: [data.description || ''],
-      dueDate: [data.dueDate || null],
-      completed: [data.completed || false]
+      title: ['', Validators.required],
+      description: [''],
+      priority: [''], // Optional
+      deadline: ['']  // Optional, renamed from dueDate
     });
 
     // Set dialog title based on whether we're editing or creating
     if (data.id) {
       this.dialogTitle = 'Edit Task';
+      this.taskForm.patchValue({
+        title: data.title,
+        description: data.description,
+        priority: data.priority || '',
+        deadline: data.deadline ? this.formatDateForInput(data.deadline) : ''
+      });
     }
   }
 
@@ -45,5 +51,10 @@ export class TaskDialogComponent implements OnInit {
 
   onCancel(): void {
     this.dialogRef.close();
+  }
+
+  private formatDateForInput(date: string): string {
+    // Implement date formatting logic here
+    return date;
   }
 }

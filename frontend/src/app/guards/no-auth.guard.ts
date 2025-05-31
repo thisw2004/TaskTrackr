@@ -1,33 +1,24 @@
 import { Injectable } from '@angular/core';
-import { 
-  CanActivate, 
-  ActivatedRouteSnapshot, 
-  RouterStateSnapshot, 
-  Router 
-} from '@angular/router';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class NoAuthGuard implements CanActivate {
-  
-  constructor(
-    private router: Router,
-    private authService: AuthService
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ): boolean {
-    // Check if user is not logged in
-    if (!this.authService.isLoggedIn()) {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    console.log('NoAuthGuard - current route:', state.url);
+    
+    // Special case for reset-password route - always allow it
+    if (state.url.includes('reset-password')) {
       return true;
     }
-
-    // Already logged in, redirect to dashboard
-    this.router.navigate(['/dashboard']);
-    return false;
+    
+    const isAuthenticated = this.authService.isAuthenticated();
+    if (isAuthenticated) {
+      this.router.navigate(['/dashboard']);
+      return false;
+    }
+    return true;
   }
 }

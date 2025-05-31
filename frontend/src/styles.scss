@@ -133,3 +133,17 @@ label {
   font-weight: 600;
   color: #444;
 }
+
+.task-notification {
+  background-color: #3f51b5;
+  color: white;
+  
+  .mat-simple-snack-bar-content {
+    font-size: 16px;
+  }
+  
+  .mat-simple-snackbar-action {
+    color: #ff4081;
+    font-weight: bold;
+  }
+}

@@ -1,34 +1,86 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { DashboardHomeComponent } from './pages/dashboard-home/dashboard-home.component'; // Import your existing component
-import { TaskListComponent } from './components/task-list/task-list.component';
-import { ProfileComponent } from './pages/profile/profile.component';
-import { SettingsComponent } from './pages/settings/settings.component';
 import { LoginComponent } from './pages/login/login.component';
 import { RegisterComponent } from './pages/register/register.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { DashboardHomeComponent } from './pages/dashboard-home/dashboard-home.component';
+import { TasksPageComponent } from './pages/tasks-page/tasks-page.component';
+import { ProfileComponent } from './pages/profile/profile.component';
+import { SettingsComponent } from './pages/settings/settings.component';
+import { ApiDocsComponent } from './pages/api-docs/api-docs.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { AuthGuard } from './guards/auth.guard';
+import { NoAuthGuard } from './guards/no-auth.guard';
 
 const routes: Routes = [
+  // Default route - redirect to dashboard if authenticated, otherwise login
   { 
     path: '', 
-    component: DashboardComponent, // This is the container with sidebar and router-outlet
+    redirectTo: '/dashboard', 
+    pathMatch: 'full'
+  },
+  
+  // Public routes (only accessible when NOT logged in)
+  { 
+    path: 'login', 
+    component: LoginComponent,
+    canActivate: [NoAuthGuard]
+  },
+  { 
+    path: 'register', 
+    component: RegisterComponent,
+    canActivate: [NoAuthGuard]
+  },
+  { 
+    path: 'reset-password', 
+    component: ResetPasswordComponent,
+    canActivate: [NoAuthGuard]
+  },
+  { 
+    path: 'test-route', 
+    component: ResetPasswordComponent 
+  },
+  
+  // Protected routes with shared layout
+  { 
+    path: '', 
+    component: DashboardComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      { path: 'dashboard', component: DashboardHomeComponent }, // Use DashboardHomeComponent here
-      { path: 'tasks', component: TaskListComponent },
-      { path: 'profile', component: ProfileComponent },
-      { path: 'settings', component: SettingsComponent },
+      {
+        path: 'dashboard',
+        component: DashboardHomeComponent
+      },
+      {
+        path: 'tasks',
+        component: TasksPageComponent
+      },
+      {
+        path: 'profile',
+        component: ProfileComponent
+      },
+      {
+        path: 'settings',
+        component: SettingsComponent
+      },
+      {
+        path: 'api-docs',
+        component: ApiDocsComponent
+      }
     ]
   },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: '**', redirectTo: '' }
+  
+  // Catch-all route
+  { path: '**', redirectTo: '/dashboard' }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [
+    RouterModule.forRoot(
+      routes,
+      { enableTracing: false } // <-- Set enableTracing to false to disable router console logs
+    )
+  ],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

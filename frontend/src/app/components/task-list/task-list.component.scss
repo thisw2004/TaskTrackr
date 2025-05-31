@@ -120,11 +120,17 @@ h2 {
 }
 
 .filter-buttons {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-left: 0; /* Remove any margin */
   margin-bottom: 15px;
   border-radius: 8px;
   overflow: hidden;
   background-color: #f5f5f5;
   display: inline-flex;
+  align-items: center;
+  width: 100%;
 }
 
 .filter-buttons button {
@@ -374,6 +380,71 @@ h2 {
   width: 10%; 
 }
 
+/* Priority styles */
+.priority-cell {
+  width: 100px;
+  text-align: center;
+}
+
+.priority-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  text-transform: capitalize;
+  color: white;
+  font-weight: 500;
+}
+
+.priority-high {
+  background-color: #f44336;
+}
+
+.priority-medium {
+  background-color: #ff9800;
+}
+
+.priority-low {
+  background-color: #4caf50;
+}
+
+.priority-filters {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-left: 0; /* Remove the 20px margin that was causing misalignment */
+  gap: 8px;
+}
+
+.priority-filters span {
+  font-weight: 500;
+}
+
+.priority-filters button {
+  font-size: 12px;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+}
+
+.priority-filters button.active {
+  color: white;
+  font-weight: bold;
+}
+
+.priority-filters button.active.priority-low {
+  background-color: #4caf50;
+}
+
+.priority-filters button.active.priority-medium {
+  background-color: #ff9800;
+}
+
+.priority-filters button.active.priority-high {
+  background-color: #f44336;
+}
+
 /* Greeting Section */
 .greeting-section {
   background-color: #ffffff;
@@ -399,4 +470,24 @@ h2 {
 /* Add this if you want to create a dashboard layout with greeting and stats */
 .dashboard-container {
   margin-bottom: 30px;
+}
+
+/* Add to your component's CSS file */
+.controls-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.filter-label {
+  font-weight: 500;
+  margin-right: 16px;
+  min-width: 70px; /* Fixed width for consistent alignment */
+  display: inline-block; /* Helps with precise alignment */
+}
+
+button {
+  margin-right: 8px;
 }

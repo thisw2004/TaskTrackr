@@ -11,7 +11,8 @@ const taskSchema = new mongoose.Schema({
     trim: true
   },
   deadline: {
-    type: Date
+    type: Date,
+    default: null  // Allow null
   },
   completed: {
     type: Boolean,
@@ -24,8 +25,8 @@ const taskSchema = new mongoose.Schema({
   },
   priority: {
     type: String,
-    enum: ['low', 'medium', 'high'],
-    default: 'medium'
+    enum: ['low', 'medium', 'high', null],  // Add null as valid option
+    default: null  // Change default to null
   },
   createdAt: {
     type: Date,

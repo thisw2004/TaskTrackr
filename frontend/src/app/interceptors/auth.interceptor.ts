@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import {
   HttpRequest,
@@ -6,12 +5,14 @@ import {
   HttpEvent,
   HttpInterceptor
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     // Get the current user
@@ -29,6 +30,13 @@ export class AuthInterceptor implements HttpInterceptor {
     // Log the request for debugging (you can remove this later)
     console.debug('Intercepted request:', request.url, 'with auth:', !!currentUser?.token);
     
-    return next.handle(request);
+    return next.handle(request).pipe(
+      catchError(error => {
+        if (error.status === 401) {
+          this.router.navigate(['/login']);
+        }
+        return throwError(error);
+      })
+    );
   }
 }

@@ -32,6 +32,7 @@
         </mat-error>
       </mat-form-field>
       
+      
       <div class="form-actions">
         <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || isLoading" class="full-width login-button">
           <mat-spinner *ngIf="isLoading" diameter="24" class="login-spinner"></mat-spinner>
@@ -42,6 +43,10 @@
       <div class="auth-links">
         <a routerLink="/register" class="register-link">Don't have an account? Sign up</a>
       </div>
+
+      <!-- <div class="auth-links">
+        <a routerLink="/reset-password" class="register-link">Forgot your password?</a>
+      </div> -->
     </form>
   </div>
 </div>

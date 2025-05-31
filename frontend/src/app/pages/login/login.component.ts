@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { TaskService } from '../../services/task.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +20,9 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private taskService: TaskService,
+    private snackBar: MatSnackBar
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -43,6 +47,8 @@ export class LoginComponent implements OnInit {
         this.loginForm.value.password
       ).subscribe({
         next: () => {
+          this.isLoading = false;
+          this.checkTasksDueToday();
           this.router.navigate(['/dashboard']);
         },
         error: (error) => {
@@ -54,5 +60,47 @@ export class LoginComponent implements OnInit {
         }
       });
     }
+  }
+
+  private checkTasksDueToday(): void {
+    console.log('Checking for tasks due today...');
+    this.taskService.getTasksDueToday().subscribe({
+      next: (tasks) => {
+        if (tasks && tasks.length > 0) {
+          // Create a notification message with task names
+          let message = `You have ${tasks.length} task(s) ending today:\n`;
+          
+          // Add task names (limit to first 3 to avoid too long notifications)
+          const tasksToShow = tasks.slice(0, 3);
+          tasksToShow.forEach((task, index) => {
+            message += `• ${task.title}\n`;
+          });
+          
+          // Add "and more..." if there are more than 3 tasks
+          if (tasks.length > 3) {
+            message += `• and ${tasks.length - 3} more...`;
+          }
+          
+          this.showNotification(message);
+        } else {
+          console.log('No tasks due today');
+        }
+      },
+      error: (error) => {
+        console.error('Error checking tasks due today:', error);
+      }
+    });
+  }
+
+  private showNotification(message: string): void {
+    this.snackBar.open(message, 'View Tasks', {
+      duration: 10000, // Extended duration for longer message
+      horizontalPosition: 'end',
+      verticalPosition: 'top',
+      panelClass: ['task-notification']
+    }).onAction().subscribe(() => {
+      // Navigate to tasks view when user clicks "View Tasks"
+      this.router.navigate(['/tasks'], { queryParams: { filter: 'today' } });
+    });
   }
 }

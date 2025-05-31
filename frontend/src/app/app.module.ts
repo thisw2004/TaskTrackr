@@ -1,8 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -36,6 +35,7 @@ import { SettingsComponent } from './pages/settings/settings.component';
 import { TaskFormDialogComponent } from './components/task-form-dialog/task-form-dialog.component';
 import { ApiDocsComponent } from './pages/api-docs/api-docs.component';
 import { TaskDialogComponent } from './components/task-dialog/task-dialog.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 
 import { AuthGuard } from './guards/auth.guard';
 import { NoAuthGuard } from './guards/no-auth.guard';
@@ -49,59 +49,10 @@ import { AuthService } from './services/auth.service';
 import { TaskService } from './services/task.service';
 import { TaskEditDialogComponent } from './components/task-edit-dialog/task-edit-dialog.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
-const routes: Routes = [
-  // Default route - redirect to dashboard if authenticated, otherwise login
-  { 
-    path: '', 
-    redirectTo: '/dashboard', 
-    pathMatch: 'full'
-  },
-  
-  // Public routes (only accessible when NOT logged in)
-  { 
-    path: 'login', 
-    component: LoginComponent,
-    canActivate: [NoAuthGuard]
-  },
-  { 
-    path: 'register', 
-    component: RegisterComponent,
-    canActivate: [NoAuthGuard]
-  },
-  
-  // Protected routes with shared layout
-  { 
-    path: '', 
-    component: DashboardComponent, // This is the shell with the menu
-    canActivate: [AuthGuard],
-    children: [
-      {
-        path: 'dashboard',
-        component: DashboardHomeComponent  // Change from TaskListComponent to DashboardHomeComponent
-      },
-      {
-        path: 'tasks',
-        component: TasksPageComponent
-      },
-      {
-        path: 'profile',
-        component: ProfileComponent
-      },
-      {
-        path: 'settings',
-        component: SettingsComponent
-      },
-      {
-        path: 'api-docs',
-        component: ApiDocsComponent
-      }
-    ]
-  },
-  
-  // Catch-all route - redirect to dashboard (which will enforce login if needed)
-  { path: '**', redirectTo: '/dashboard' }
-];
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -119,6 +70,7 @@ const routes: Routes = [
     TaskDialogComponent,
     TaskEditDialogComponent,
     SidebarComponent,
+    ResetPasswordComponent
   ],
   imports: [
     BrowserModule,
@@ -145,7 +97,13 @@ const routes: Routes = [
     MatDatepickerModule,
     MatNativeDateModule,
     MatSnackBarModule, // Add SnackBar module here
-    RouterModule.forRoot(routes)
+    AppRoutingModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production,
+      // Register the ServiceWorker as soon as the app is stable
+      // or after 30 seconds (whichever comes first)
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ],
   providers: [
     AuthService,

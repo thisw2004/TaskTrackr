@@ -75,3 +75,7 @@ TaskTrackr is a MEAN stack application that helps users create order and maintai
 6. As a user, I want to be reminded of deadlines so I don't miss important tasks.
 7. As a user, I want to mark a task as "completed" so I can track what I've done.
 8. As a user, I want to search for a task by keyword.
+
+user credentials test user:
+
+tdc.swijnenburg@student.avans.nl
