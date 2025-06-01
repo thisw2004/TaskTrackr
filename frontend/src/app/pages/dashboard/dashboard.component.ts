@@ -22,6 +22,6 @@ export class DashboardComponent implements AfterViewInit {
   }
   
   logout(): void {
-    this.authService.logout();
+    this.authService.confirmAndLogout();
   }
 }

@@ -47,6 +47,15 @@ export class AuthService {
       );
   }
 
+  confirmAndLogout(): void {
+    // Using built-in browser confirm dialog
+    const confirmed = confirm('Are you sure you want to log out?');
+    
+    if (confirmed) {
+      this.logout();
+    }
+  }
+
   logout(): void {
     // Remove user from local storage
     localStorage.removeItem('currentUser');
