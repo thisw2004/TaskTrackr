@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TaskService } from '../../services/task.service';
 import { AuthService } from '../../services/auth.service'; // Assuming this exists
+import { SpecialDayService } from '../../services/special-day.service';
 
 @Component({
   selector: 'app-dashboard-home',
@@ -19,17 +20,21 @@ export class DashboardHomeComponent implements OnInit {
   error: string | null = null;
   userName: string = '';
   greeting: string = '';
+  specialDay: any = null;
+  specialDayLoading = false;
 
   constructor(
     private taskService: TaskService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private specialDayService: SpecialDayService
   ) { }
 
   ngOnInit(): void {
     this.loadTaskStats();
     this.loadUserInfo();
     this.setGreeting();
+    this.checkSpecialDay();
   }
   
   loadTaskStats(): void {
@@ -77,5 +82,23 @@ export class DashboardHomeComponent implements OnInit {
 
   navigateToTasks(): void {
     this.router.navigate(['/tasks']);
+  }
+
+  checkSpecialDay(): void {
+    this.specialDayLoading = true;
+    this.specialDayService.checkSpecialDay().subscribe(
+      (result) => {
+        this.specialDay = result; // Always set the result, even for normal days
+        this.specialDayLoading = false;
+      },
+      (error) => {
+        console.error('Error checking for special day', error);
+        this.specialDayLoading = false;
+        this.specialDay = {
+          isSpecialDay: false,
+          description: "Vandaag is een normale dag."
+        };
+      }
+    );
   }
 }

@@ -4,6 +4,19 @@
     <p class="greeting-subtitle">Waar wil je vandaag aan werken?</p>
   </div>
 
+  <!-- Special day notification -->
+  <div *ngIf="specialDay" class="special-day-banner" [ngClass]="{'normal-day': !specialDay.isSpecialDay}">
+    <div class="special-day-icon">
+      <i *ngIf="specialDay.isSpecialDay" class="fas fa-calendar-day"></i>
+      <i *ngIf="!specialDay.isSpecialDay" class="fas fa-calendar"></i>
+    </div>
+    <div class="special-day-content">
+      <h3 *ngIf="specialDay.isSpecialDay">Vandaag is een speciale dag!</h3>
+      <h3 *ngIf="!specialDay.isSpecialDay">Gewone dag</h3>
+      <p>{{ specialDay.description }}</p>
+    </div>
+  </div>
+  
   <div class="stats-container">
     <div class="stat-box total-box" (click)="navigateToTasks()">
       <div class="icon-container">
@@ -32,4 +45,5 @@
 
   <div *ngIf="loading" class="loading">Loading statistics...</div>
   <div *ngIf="error" class="error">{{ error }}</div>
+  <div *ngIf="specialDayLoading" class="loading">Checking special days...</div>
 </div>

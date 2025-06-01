@@ -17,12 +17,17 @@ TaskTrackr is a MEAN stack application that helps users create order and maintai
 - Task completion marking
 - Deadline reminders
 - Task searching by keyword
+- Special day notifications
 
 ### Tech Stack
 - **M**ongoDB - Database
 - **E**xpress.js - Backend framework
 - **A**ngular - Frontend framework
 - **N**ode.js - Runtime environment
+
+### External Data Sources
+- [date.nager.at](https://date.nager.at) - Public holiday API for retrieving official holidays by country
+- [Days of the Year](https://www.daysoftheyear.com) - Reference for special and unique days throughout the year
 
 ## Getting Started
 
