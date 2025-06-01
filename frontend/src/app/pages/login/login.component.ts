@@ -67,19 +67,9 @@ export class LoginComponent implements OnInit {
     this.taskService.getTasksDueToday().subscribe({
       next: (tasks) => {
         if (tasks && tasks.length > 0) {
-          // Create a notification message with task names
-          let message = `You have ${tasks.length} task(s) ending today:\n`;
-          
-          // Add task names (limit to first 3 to avoid too long notifications)
-          const tasksToShow = tasks.slice(0, 3);
-          tasksToShow.forEach((task, index) => {
-            message += `• ${task.title}\n`;
-          });
-          
-          // Add "and more..." if there are more than 3 tasks
-          if (tasks.length > 3) {
-            message += `• and ${tasks.length - 3} more...`;
-          }
+          // Use singular or plural form based on the number of tasks
+          const taskWord = tasks.length === 1 ? 'taak' : 'taken';
+          let message = `Let op! Je hebt ${tasks.length} ${taskWord} met een deadline van vandaag!`;
           
           this.showNotification(message);
         } else {
