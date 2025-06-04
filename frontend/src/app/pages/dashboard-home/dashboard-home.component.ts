@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TaskService } from '../../services/task.service';
-import { AuthService } from '../../services/auth.service'; // Assuming this exists
+import { AuthService } from '../../services/auth.service';
 import { SpecialDayService } from '../../services/special-day.service';
 
 @Component({
@@ -18,7 +18,6 @@ export class DashboardHomeComponent implements OnInit {
   
   loading: boolean = false;
   error: string | null = null;
-  userName: string = '';
   greeting: string = '';
   specialDay: any = null;
   specialDayLoading = false;
@@ -31,10 +30,10 @@ export class DashboardHomeComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Load dashboard data
     this.loadTaskStats();
-    this.loadUserInfo();
-    this.setGreeting();
     this.checkSpecialDay();
+    this.setGreeting();
   }
   
   loadTaskStats(): void {
@@ -51,19 +50,6 @@ export class DashboardHomeComponent implements OnInit {
         console.error('Error loading task stats:', err);
         this.error = 'Unable to load task statistics.';
         this.loading = false;
-      }
-    });
-  }
-
-  loadUserInfo(): void {
-    this.authService.getCurrentUser().subscribe({
-      next: (user) => {
-        if (user) {
-          this.userName = user.name;
-        }
-      },
-      error: (err) => {
-        console.error('Error loading user info:', err);
       }
     });
   }
@@ -88,7 +74,7 @@ export class DashboardHomeComponent implements OnInit {
     this.specialDayLoading = true;
     this.specialDayService.checkSpecialDay().subscribe(
       (result) => {
-        this.specialDay = result; // Always set the result, even for normal days
+        this.specialDay = result;
         this.specialDayLoading = false;
       },
       (error) => {
