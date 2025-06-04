@@ -32,11 +32,11 @@ export class RegisterComponent implements OnInit {
     
     this.errorMessage = '';
 
-    this.authService.register(
-      this.registerForm.get('firstName')?.value as string,
-      this.registerForm.get('email')?.value as string,
-      this.registerForm.get('password')?.value as string
-    ).subscribe({
+    this.authService.register({
+      email: this.registerForm.get('email')?.value as string,
+      password: this.registerForm.get('password')?.value as string,
+      name: this.registerForm.get('firstName')?.value as string
+    }).subscribe({
       next: (): void => {
         
         // Navigate to login with success message

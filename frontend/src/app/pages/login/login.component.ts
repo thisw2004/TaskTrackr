@@ -42,10 +42,10 @@ export class LoginComponent implements OnInit {
       this.isLoading = true;
       this.errorMessage = '';
       
-      this.authService.login(
-        this.loginForm.value.email,
-        this.loginForm.value.password
-      ).subscribe({
+      this.authService.login({
+        email: this.loginForm.value.email,
+        password: this.loginForm.value.password
+      }).subscribe({
         next: () => {
           this.isLoading = false;
           this.checkTasksDueToday();

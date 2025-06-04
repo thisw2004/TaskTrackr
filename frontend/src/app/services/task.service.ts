@@ -1,203 +1,150 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, throwError, tap } from 'rxjs';
-import { catchError, retry, map } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError, of } from 'rxjs';
+import { catchError, retry, tap } from 'rxjs/operators';
+import { AuthService } from './auth.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TaskService {
-  private apiUrl = environment.apiUrl || 'http://localhost:3000/api';
+  private apiUrl = 'http://localhost:3000/api/tasks';
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient, 
+    private authService: AuthService,
+    private router: Router
+  ) { }
 
-  // Get all tasks
+  // Check authentication and redirect if needed
+  private checkAuth(): boolean {
+    if (!this.authService.isAuthenticated()) {
+      console.log('User not authenticated, redirecting to login');
+      this.router.navigate(['/login']);
+      return false;
+    }
+    return true;
+  }
+
+  // Get tasks with proper authentication headers
   getTasks(): Observable<any[]> {
-    console.log('Fetching tasks from:', this.apiUrl + '/tasks');
-    return this.http.get<any[]>(this.apiUrl + '/tasks').pipe(
-      map(tasks => tasks.map(task => this.normalizeTaskData(task))),
-      tap(tasks => console.log('API response:', tasks)),
-      catchError(error => {
-        console.error('Error fetching tasks:', error);
-        return this.handleError(error);
-      })
+    if (!this.checkAuth()) {
+      return of([]);
+    }
+
+    const headers = this.getAuthHeaders();
+    
+    return this.http.get<any[]>(this.apiUrl, { headers }).pipe(
+      retry(1),
+      catchError(this.handleError)
     );
   }
-
-  /**
-   * Get all tasks for a specific user
-   * @param userId The ID of the user
-   * @returns Observable of tasks array
-   */
-  getTasksByUserId(userId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/users/${userId}/tasks`).pipe(
-      map(tasks => tasks.map(task => this.normalizeTaskData(task)))
-    );
-  }
-
+  
   // Get tasks due today
   getTasksDueToday(): Observable<any[]> {
-    console.log('Fetching tasks due today...');
-    
-    // Use the standard tasks endpoint
-    return this.http.get<any[]>(`${this.apiUrl}/tasks`).pipe(
-      map(tasks => {
-        // Get today's date (start of day)
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        // End of today
-        const endOfDay = new Date(today);
-        endOfDay.setHours(23, 59, 59, 999);
-        
-        console.log(`Filtering tasks due today (${today.toISOString()} to ${endOfDay.toISOString()})`);
-        
-        // Filter tasks for those due today
-        return tasks.filter(task => {
-          if (!task.deadline) return false;
-          
-          const taskDueDate = new Date(task.deadline);
-          return taskDueDate >= today && taskDueDate <= endOfDay;
-        });
-      }),
-      map(tasks => tasks.map(task => this.normalizeTaskData(task))),
-      tap(tasks => {
-        console.log('========================');
-        console.log('Tasks due today:', tasks.length);
-        tasks.forEach(task => {
-          console.log(`- ${task.title} (Due: ${task.deadline})`);
-        });
-        console.log('========================');
-      }),
-      catchError(error => {
-        console.error('Error fetching tasks due today:', error);
-        return throwError(() => new Error('Failed to fetch tasks due today'));
-      })
+    if (!this.checkAuth()) {
+      return of([]);
+    }
+
+    const headers = this.getAuthHeaders();
+    return this.http.get<any[]>(`${this.apiUrl}/due-today`, { headers }).pipe(
+      catchError(this.handleError)
     );
   }
 
-  // Get task by id
+  // Get tasks by user ID
+  getTasksByUserId(userId: string): Observable<any[]> {
+    if (!this.checkAuth()) {
+      return of([]);
+    }
+
+    const headers = this.getAuthHeaders();
+    return this.http.get<any[]>(`${this.apiUrl}/user/${userId}`, { headers }).pipe(
+      catchError(this.handleError)
+    );
+  }
+  
+  // Get a single task
   getTask(id: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/tasks/${id}`).pipe(
-      map(task => this.normalizeTaskData(task)),
+    if (!this.checkAuth()) {
+      return of(null);
+    }
+
+    const headers = this.getAuthHeaders();
+    return this.http.get<any>(`${this.apiUrl}/${id}`, { headers }).pipe(
       catchError(this.handleError)
     );
   }
 
-  // Add new task
-  addTask(task: any): Observable<any> {
-    // First check if deadline is valid
-    const deadlineValue = task.deadline || task.dueDate;
-    const hasValidDeadline = deadlineValue && 
-                            deadlineValue !== '' && 
-                            !isNaN(new Date(deadlineValue).getTime());
-    
-    const taskData = {
-      title: task.title,
-      description: task.description,
-      deadline: hasValidDeadline ? deadlineValue : null,
-      priority: task.priority || null
-    };
-    
-    return this.http.post<any>(this.apiUrl + '/tasks', taskData).pipe(
-      map(task => this.normalizeTaskData(task)),
-      catchError(this.handleError)
-    );
-  }
-
-  // Alias for addTask to maintain compatibility
+  // Create task (also aliased as addTask for compatibility)
   createTask(task: any): Observable<any> {
-    return this.addTask(task);
+    if (!this.checkAuth()) {
+      return of(null);
+    }
+
+    const headers = this.getAuthHeaders();
+    return this.http.post<any>(this.apiUrl, task, { headers }).pipe(
+      catchError(this.handleError)
+    );
   }
 
-  // Update task
-  updateTask(task: any): Observable<any> {
-    const id = task._id || task.id;
+  // Alias for createTask
+  addTask(task: any): Observable<any> {
+    return this.createTask(task);
+  }
+
+  // Update task (overloaded method to handle both formats)
+  updateTask(idOrTask: string | any, task?: any): Observable<any> {
+    if (!this.checkAuth()) {
+      return of(null);
+    }
+
+    const headers = this.getAuthHeaders();
     
-    // First check if deadline is valid
-    const deadlineValue = task.deadline || task.dueDate;
-    const hasValidDeadline = deadlineValue && 
-                            deadlineValue !== '' && 
-                            !isNaN(new Date(deadlineValue).getTime());
-    
-    const taskData = {
-      title: task.title,
-      description: task.description,
-      deadline: hasValidDeadline ? deadlineValue : null,
-      priority: task.priority || null,
-      completed: task.completed
-    };
-    
-    console.log('Updating task:', id, taskData);
-    
-    return this.http.put<any>(`${this.apiUrl}/tasks/${id}`, taskData).pipe(
-      map(task => this.normalizeTaskData(task)),
-      tap(response => console.log('Update response:', response)),
-      catchError(error => {
-        console.error('Update error:', error);
-        return this.handleError(error);
-      })
-    );
+    // If task is undefined, then idOrTask is the task object with an id property
+    if (task === undefined) {
+      const taskObj = idOrTask as any;
+      return this.http.put<any>(`${this.apiUrl}/${taskObj.id || taskObj._id}`, taskObj, { headers }).pipe(
+        catchError(this.handleError)
+      );
+    } 
+    // Otherwise, idOrTask is the id and task is the task object
+    else {
+      return this.http.put<any>(`${this.apiUrl}/${idOrTask}`, task, { headers }).pipe(
+        catchError(this.handleError)
+      );
+    }
   }
 
   // Delete task
   deleteTask(id: string): Observable<any> {
-    console.log('Service deleting task:', id);
-    return this.http.delete<any>(`${this.apiUrl}/tasks/${id}`).pipe(
-      tap(() => console.log('Delete successful')),
-      catchError(error => {
-        console.error('Delete error:', error);
-        return this.handleError(error);
-      })
+    if (!this.checkAuth()) {
+      return of(null);
+    }
+
+    const headers = this.getAuthHeaders();
+    return this.http.delete<any>(`${this.apiUrl}/${id}`, { headers }).pipe(
+      catchError(this.handleError)
     );
   }
-
-  // Save task
-  saveTask(task: any): Observable<any> {
-    // First check if deadline is valid
-    const deadlineValue = task.deadline || task.dueDate;
-    const hasValidDeadline = deadlineValue && 
-                            deadlineValue !== '' && 
-                            !isNaN(new Date(deadlineValue).getTime());
-    
-    const taskToSave = {
-      title: task.title,
-      description: task.description,
-      priority: task.priority || null,
-      deadline: hasValidDeadline ? deadlineValue : null
-    };
-
-    return this.http.post<any>(`${this.apiUrl}/tasks`, taskToSave);
-  }
-
-  // Normalize task data for consistent frontend representation
-  private normalizeTaskData(task: any): any {
-    // Check if deadline is empty string, null, undefined, or invalid date
-    const hasValidDeadline = task.deadline && 
-                            task.deadline !== '' && 
-                            !isNaN(new Date(task.deadline).getTime());
-    
-    return {
-      ...task,
-      id: task._id || task.id,
-      deadline: hasValidDeadline ? task.deadline : null,
-      dueDate: hasValidDeadline ? task.deadline : null,
-      // Set display values for UI
-      deadlineDisplay: hasValidDeadline ? new Date(task.deadline).toLocaleDateString() : '-',
-      createdAtDisplay: task.createdAt ? new Date(task.createdAt).toLocaleDateString() : '-'
-    };
+  
+  // Helper method to get authentication headers
+  private getAuthHeaders(): HttpHeaders {
+    const token = this.authService.getToken();
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
   }
 
   // Error handling
-  private handleError(error: HttpErrorResponse) {
-    let errorMessage = '';
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = `Error: ${error.error.message}`;
-    } else {
-      errorMessage = `Server Error Code: ${error.status}\nMessage: ${error.message}`;
+  private handleError = (error: HttpErrorResponse) => {
+    if (error.status === 401) {
+      console.log('Authentication error, redirecting to login');
+      this.authService.logout();
+      this.router.navigate(['/login']);
     }
-    console.error(errorMessage);
-    return throwError(() => new Error('Something went wrong. Please try again later.'));
+    return throwError(() => error);
   }
 }
