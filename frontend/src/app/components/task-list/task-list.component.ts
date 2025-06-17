@@ -187,46 +187,29 @@ export class TaskListComponent implements OnInit {
     });
   }
 
-  editTask(task: any): void {
-    const taskToEdit = { 
-      ...task,
-      dueDate: task.deadline 
-    };
-    
+  editTask(task: Task): void {
     const dialogRef = this.dialog.open(TaskDialogComponent, {
       width: '500px',
-      data: taskToEdit
+      data: {
+        isEdit: true,
+        task: task
+      }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Preserve the original ID
-        result._id = task._id;
-        
         this.taskService.updateTask(result).subscribe({
-          next: (updatedTask) => {
-            // Explicitly set the text color properties
-            const mergedTask = {
-              ...updatedTask,
-              completed: updatedTask.completed || task.completed // Preserve completed state
-            };
-            
-            const index = this.tasks.findIndex(t => t._id === task._id);
-            if (index !== -1) {
-              this.tasks[index] = mergedTask;
-              
-              // Force refresh of the task list
-              this.tasks = [...this.tasks];
-              this.allTasks = [...this.tasks];
-              this.applyFilters(); // Apply filters after editing a task
-              this.updateTaskStats();
-            }
-            
-            this.snackBar.open('Task updated successfully', 'Close', { duration: 3000 });
+          next: () => {
+            this.loadTasks();
+            this.snackBar.open('Task updated successfully', 'Close', {
+              duration: 3000
+            });
           },
-          error: (err) => {
-            console.error('Error updating task:', err);
-            this.snackBar.open('Failed to update task', 'Close', { duration: 3000 });
+          error: (error) => {
+            console.error('Error updating task:', error);
+            this.snackBar.open('Failed to update task', 'Close', {
+              duration: 3000
+            });
           }
         });
       }
