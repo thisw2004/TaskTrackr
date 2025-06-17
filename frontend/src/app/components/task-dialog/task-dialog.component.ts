@@ -5,7 +5,50 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 @Component({
   selector: 'app-task-dialog',
   templateUrl: './task-dialog.component.html',
-  styles: [''] // Use inline styles instead
+  styles: [`
+    .dialog-content {
+      display: flex;
+      flex-direction: column;
+      padding: 0 20px;
+      min-width: 400px;
+    }
+    
+    .form-field {
+      width: 100%;
+      margin-bottom: 20px;  /* Increased from 15px */
+    }
+    
+    .full-width {
+      width: 100%;
+    }
+    
+    /* Add specific styling for mat-form-field to ensure labels display properly */
+    ::ng-deep .mat-form-field-infix {
+      width: 100% !important;
+      padding-top: 8px !important;
+    }
+    
+    ::ng-deep .mat-form-field-label-wrapper {
+      top: -1.5em;
+      padding-top: 0.84375em;
+    }
+    
+    .dialog-actions {
+      padding: 8px 16px;
+      margin-bottom: 8px;
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    
+    .required {
+      color: red;
+      margin-left: 2px;
+    }
+  `]
 })
 export class TaskDialogComponent implements OnInit {
   taskForm!: FormGroup; // Add the non-null assertion operator (!)

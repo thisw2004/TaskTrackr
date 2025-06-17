@@ -33,62 +33,51 @@ exports.getTaskById = async (req, res) => {
 // Create a new task
 exports.createTask = async (req, res) => {
   try {
-    const { title, description, deadline, priority } = req.body;
+    const taskData = {
+      title: req.body.title,
+      description: req.body.description,
+      deadline: req.body.deadline,
+      completed: req.body.completed || false
+    };
     
-    // Validate input
-    if (!title) {
-      return res.status(400).json({ message: 'Task title is required' });
-    }
+    // Handle priority: convert empty string to null
+    taskData.priority = req.body.priority || null;
     
-    const newTask = new Task({
-      title,
-      description,
-      deadline,
-      priority,
-      user: req.user._id
-    });
+    const newTask = new Task(taskData);
+    const savedTask = await newTask.save();
     
-    await newTask.save();
-    res.status(201).json({
-      message: 'Task created successfully',
-      task: newTask
-    });
+    res.status(201).json(savedTask);
   } catch (error) {
     console.error('Error creating task:', error);
-    res.status(500).json({ message: 'Server error while creating task' });
+    res.status(500).json({ message: error.message });
   }
 };
 
 // Update a task
 exports.updateTask = async (req, res) => {
   try {
-    const { title, description, deadline, priority } = req.body;
+    // Process the update data
+    const updateData = { ...req.body };
     
-    // Find task and verify ownership
-    let task = await Task.findOne({
-      _id: req.params.id,
-      user: req.user._id
-    });
+    // Convert empty priority string to null
+    if (updateData.priority === '') {
+      updateData.priority = null;
+    }
     
-    if (!task) {
+    const updatedTask = await Task.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedTask) {
       return res.status(404).json({ message: 'Task not found' });
     }
     
-    // Update task fields
-    task.title = title || task.title;
-    task.description = description !== undefined ? description : task.description;
-    task.deadline = deadline || task.deadline;
-    task.priority = priority || task.priority;
-    
-    await task.save();
-    
-    res.status(200).json({
-      message: 'Task updated successfully',
-      task
-    });
+    res.json(updatedTask);
   } catch (error) {
     console.error('Error updating task:', error);
-    res.status(500).json({ message: 'Server error while updating task' });
+    res.status(500).json({ message: error.message });
   }
 };
 

@@ -3,49 +3,26 @@ const mongoose = require('mongoose');
 const taskSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true,
-    trim: true
+    required: true
   },
   description: {
+    type: String
+  },
+  priority: {
     type: String,
-    trim: true
+    enum: ['Low', 'Medium', 'High', null], // Add null to valid enum values
+    default: null // Set default to null
   },
   deadline: {
-    type: Date,
-    default: null  // Allow null
+    type: Date
   },
   completed: {
     type: Boolean,
     default: false
-  },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
-  },
-  priority: {
-    type: String,
-    enum: ['low', 'medium', 'high', null],  // Add null as valid option
-    default: null  // Change default to null
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
   }
+}, {
+  timestamps: true
 });
-
-// Update the updatedAt timestamp on save
-taskSchema.pre('save', function(next) {
-  this.updatedAt = Date.now();
-  next();
-});
-
-// Create text index for search functionality
-taskSchema.index({ title: 'text', description: 'text' });
 
 const Task = mongoose.model('Task', taskSchema);
 
