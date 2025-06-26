@@ -46,8 +46,24 @@ export class LoginComponent implements OnInit {
         email: this.loginForm.value.email,
         password: this.loginForm.value.password
       }).subscribe({
-        next: () => {
-          this.isLoading = false;
+        next: (response) => {
+          console.log('Login successful, loading tasks...');
+          // After successful login, check for tasks due today
+          this.taskService.getTasks().subscribe({
+            next: (tasks) => {
+              console.log(`Loaded ${tasks.length} tasks for user`);
+              this.isLoading = false;
+              // Navigate to dashboard after tasks are loaded
+              this.router.navigate(['/dashboard']);
+              this.checkTasksDueToday();
+            },
+            error: (err) => {
+              console.error('Error loading initial tasks:', err);
+              this.isLoading = false;
+              // Still navigate to dashboard even if task loading fails
+              this.router.navigate(['/dashboard']);
+            }
+          });
           this.checkTasksDueToday();
           this.router.navigate(['/dashboard']);
         },

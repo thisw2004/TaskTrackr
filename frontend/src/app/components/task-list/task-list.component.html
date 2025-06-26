@@ -15,6 +15,7 @@
         <div class="priority-filters">
           <span class="filter-label"><b>Priority:</b></span>
           <button (click)="setPriorityFilter('all')" [class.active]="priorityFilter === 'all'">All</button>
+          <button (click)="setPriorityFilter('none')" [class.active]="priorityFilter === 'none'" class="priority-none">No Priority</button>
           <button (click)="setPriorityFilter('low')" [class.active]="priorityFilter === 'low'" class="priority-low">Low</button>
           <button (click)="setPriorityFilter('medium')" [class.active]="priorityFilter === 'medium'" class="priority-medium">Medium</button>
           <button (click)="setPriorityFilter('high')" [class.active]="priorityFilter === 'high'" class="priority-high">High</button>

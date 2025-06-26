@@ -51,8 +51,13 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   `]
 })
 export class TaskDialogComponent implements OnInit {
-  taskForm!: FormGroup; // Add the non-null assertion operator (!)
+  taskForm!: FormGroup;
   dialogTitle: string = 'Add Task';
+  priorities = [
+    { value: 'low', display: 'Low' },
+    { value: 'medium', display: 'Medium' },
+    { value: 'high', display: 'High' }
+  ];
   
   constructor(
     private fb: FormBuilder,
@@ -62,9 +67,9 @@ export class TaskDialogComponent implements OnInit {
   
   ngOnInit(): void {
     this.taskForm = this.fb.group({
-      title: ['', Validators.required],
+      title: ['', [Validators.required, Validators.minLength(3)]],
       description: [''],
-      priority: [''],
+      priority: ['medium'],  // Set default priority
       deadline: [null]
     });
 
@@ -77,19 +82,23 @@ export class TaskDialogComponent implements OnInit {
       this.taskForm.patchValue({
         title: this.data.task.title,
         description: this.data.task.description || '',
-        priority: this.data.task.priority || '',
+        priority: this.data.task.priority || 'medium',
         deadline: this.data.task.deadline ? new Date(this.data.task.deadline) : null
       });
       
-      // Add the task ID to the form data (hidden)
-      this.taskForm.addControl('_id', this.fb.control(this.data.task._id));
-      this.taskForm.addControl('completed', this.fb.control(this.data.task.completed || false));
+      // Add the task ID if it exists
+      if (this.data.task._id) {
+        this.taskForm.addControl('_id', this.fb.control(this.data.task._id));
+      }
     }
   }
 
   onSubmit(): void {
     if (this.taskForm.valid) {
-      this.dialogRef.close(this.taskForm.value);
+      const formValue = this.taskForm.value;
+      // Ensure priority is lowercase
+      formValue.priority = formValue.priority.toLowerCase();
+      this.dialogRef.close(formValue);
     }
   }
 

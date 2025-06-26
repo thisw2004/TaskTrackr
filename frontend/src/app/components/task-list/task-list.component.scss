@@ -310,12 +310,32 @@ h2 {
 }
 
 /* Cell width distribution */
-.status-cell { width: 10%; }
-.title-cell { width: 20%; }
-.description-cell { width: 30%; }
-.date-cell { width: 15%; }
-.deadline-cell { width: 15%; }
-.actions-cell { width: 10%; }
+.status-cell { 
+  width: 8%; 
+}
+.title-cell { 
+  width: 18%; 
+}
+.desc-cell { 
+  width: 25%; 
+}
+.date-cell { 
+  width: 12%; 
+}
+.deadline-cell { 
+  width: 12%; 
+}
+.priority-cell { 
+  width: 10%; 
+}
+.user-cell {
+  width: 15%;
+  text-align: left;
+  padding-left: 8px;
+}
+.actions-cell { 
+  width: 10%; 
+}
 
 /* Stats Dashboard */
 .stats-dashboard {
@@ -362,19 +382,27 @@ h2 {
 
 /* Cell width distribution */
 .status-cell { 
-  width: 10%; 
+  width: 8%; 
 }
 .title-cell { 
-  width: 20%; 
+  width: 18%; 
 }
 .desc-cell { 
-  width: 30%; 
+  width: 25%; 
 }
 .date-cell { 
-  width: 15%; 
+  width: 12%; 
 }
 .deadline-cell { 
-  width: 15%; 
+  width: 12%; 
+}
+.priority-cell { 
+  width: 10%; 
+}
+.user-cell {
+  width: 15%;
+  text-align: left;
+  padding-left: 8px;
 }
 .actions-cell { 
   width: 10%; 
@@ -413,36 +441,46 @@ h2 {
   width: 100%;
   margin-left: 0; /* Remove the 20px margin that was causing misalignment */
   gap: 8px;
-}
 
-.priority-filters span {
-  font-weight: 500;
-}
+  .priority-none {
+    &.active {
+      background-color: #9e9e9e;
+      color: white;
+    }
+  }
 
-.priority-filters button {
-  font-size: 12px;
-  padding: 4px 8px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  background-color: #f0f0f0;
-}
+  .priority-low {
+    &.active {
+      background-color: #4caf50;
+      color: white;
+    }
+  }
 
-.priority-filters button.active {
-  color: white;
-  font-weight: bold;
-}
+  button {
+    font-size: 12px;
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+  }
 
-.priority-filters button.active.priority-low {
-  background-color: #4caf50;
-}
+  button.active {
+    color: white;
+    font-weight: bold;
+  }
 
-.priority-filters button.active.priority-medium {
-  background-color: #ff9800;
-}
+  button.active.priority-low {
+    background-color: #4caf50;
+  }
 
-.priority-filters button.active.priority-high {
-  background-color: #f44336;
+  button.active.priority-medium {
+    background-color: #ff9800;
+  }
+
+  button.active.priority-high {
+    background-color: #f44336;
+  }
 }
 
 /* Greeting Section */

@@ -121,7 +121,19 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+    const token = localStorage.getItem(this.tokenKey);
+    if (!token) {
+      return null;
+    }
+    
+    // Verify token format
+    if (!token.match(/^[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]*$/)) {
+      console.error('Invalid token format');
+      this.logout();
+      return null;
+    }
+    
+    return token;
   }
 
   getUserData(): User | null {
@@ -148,14 +160,21 @@ export class AuthService {
       }
 
       const payload = JSON.parse(atob(tokenParts[1]));
-      const expiry = payload.exp * 1000;
+      const expirationDate = payload.exp * 1000; // Convert to milliseconds
       
-      if (Date.now() >= expiry) {
-        console.log('Token expired');
+      if (Date.now() >= expirationDate) {
+        console.log('Token expired, logging out');
         this.logout();
+      } else {
+        // Token is valid, ensure auth status is true
+        this.authStatusSubject.next(true);
+        const userData = this.getUserData();
+        if (userData) {
+          this.currentUserSubject.next(userData);
+        }
       }
-    } catch (e) {
-      console.error('Error validating token', e);
+    } catch (err) {
+      console.error('Error checking token validity:', err);
       this.logout();
     }
   }

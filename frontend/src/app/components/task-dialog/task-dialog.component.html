@@ -27,9 +27,9 @@
         <mat-label>Priority (optional)</mat-label>
         <mat-select formControlName="priority">
           <mat-option value="">-- Select Priority --</mat-option>
-          <mat-option value="Low">Low</mat-option>
-          <mat-option value="Medium">Medium</mat-option>
-          <mat-option value="High">High</mat-option>
+          <mat-option *ngFor="let p of priorities" [value]="p.value">
+            {{p.display}}
+          </mat-option>
         </mat-select>
       </mat-form-field>
     </div>

@@ -47,7 +47,10 @@ exports.getTaskById = async (req, res) => {
 // Create a new task
 exports.createTask = async (req, res) => {
   try {
+    // Add user ID to task data
     const taskData = {
+      ...req.body,
+      user: req.user._id, // This assigns the task to the logged-in user
       title: req.body.title,
       description: req.body.description,
       deadline: req.body.deadline,

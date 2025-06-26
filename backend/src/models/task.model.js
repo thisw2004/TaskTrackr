@@ -10,8 +10,13 @@ const taskSchema = new mongoose.Schema({
   },
   priority: {
     type: String,
-    enum: ['Low', 'Medium', 'High', null], // Add null to valid enum values
-    default: null // Set default to null
+    enum: ['low', 'medium', 'high', null],
+    default: 'medium'
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
   },
   deadline: {
     type: Date

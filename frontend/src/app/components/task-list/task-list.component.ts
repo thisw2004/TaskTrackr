@@ -33,6 +33,7 @@ export class TaskListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log('TaskListComponent initialized, loading tasks...');
     this.loadTasks();
   }
 
@@ -41,26 +42,20 @@ export class TaskListComponent implements OnInit {
     this.error = null;
     
     this.taskService.getTasks().subscribe({
-      next: (data: any) => {
-        console.log('Raw response from API:', data); 
+      next: (tasks: any[]) => {
+        console.log('Received tasks:', tasks);
         
-        // Handle different response formats
-        let tasks: any[] = [];
-        
-        if (Array.isArray(data)) {
-          tasks = data;
-        } else if (data && data.data && Array.isArray(data.data)) {
-          tasks = data.data;
-        } else if (data && typeof data === 'object') {
-          console.warn('Unexpected response format, trying to extract tasks');
-          tasks = Array.isArray(data.tasks) ? data.tasks : [];
+        if (!Array.isArray(tasks)) {
+          console.error('Received invalid tasks data:', tasks);
+          this.error = 'Invalid data received from server';
+          this.loading = false;
+          return;
         }
-        
-        console.log('Processed tasks:', tasks.length, 'tasks'); 
+
         this.tasks = tasks;
-        this.allTasks = [...this.tasks];
-        this.filteredTasks = [...this.tasks]; // Initialize with all tasks
-        this.applyFilters(); // Then apply any filters
+        this.allTasks = [...tasks];
+        this.filteredTasks = [...tasks];
+        this.applyFilters();
         this.updateTaskStats();
         this.loading = false;
       },
@@ -75,16 +70,17 @@ export class TaskListComponent implements OnInit {
 
   setFilter(status: 'all' | 'active' | 'completed'): void {
     this.filterStatus = status;
-    this.applyFilters(); // Apply filters when filter changes
+    this.applyFilters();
   }
 
   setPriorityFilter(priority: string): void {
-    this.priorityFilter = priority;
+    console.log('Setting priority filter to:', priority);
+    this.priorityFilter = priority.toLowerCase(); // Ensure lowercase
     this.applyFilters();
   }
 
   applyFilters(): void {
-    // First filter by status
+    console.log('Applying filters. Priority:', this.priorityFilter);
     let result = this.tasks;
     
     // Apply status filter
@@ -94,65 +90,45 @@ export class TaskListComponent implements OnInit {
       result = result.filter(task => task.completed);
     }
     
-    // Then apply priority filter
+    // Apply priority filter
     if (this.priorityFilter !== 'all') {
-      result = result.filter(task => task.priority === this.priorityFilter);
+      result = result.filter(task => {
+        console.log('Task priority:', task.priority, 'Filter:', this.priorityFilter);
+        // Skip tasks with no priority when filtering by specific priority
+        if (!task.priority && this.priorityFilter !== 'none') {
+          return false;
+        }
+        // Show tasks with no priority when filtering for 'none'
+        if (this.priorityFilter === 'none') {
+          return !task.priority;
+        }
+        // Normal priority comparison
+        return task.priority && task.priority.toLowerCase() === this.priorityFilter.toLowerCase();
+      });
     }
     
+    // Apply search filter
+    if (this.searchTerm && this.searchTerm.trim() !== '') {
+      const term = this.searchTerm.toLowerCase();
+      result = result.filter(task => 
+        task.title.toLowerCase().includes(term) || 
+        (task.description && task.description.toLowerCase().includes(term))
+      );
+    }
+    
+    console.log('Filtered tasks:', result.length);
     this.filteredTasks = result;
-  }
-
-  getFilteredTasks(): any[] {
-    let filtered: any[];
-    
-    switch (this.filterStatus) {
-      case 'active':
-        filtered = this.tasks.filter(task => !task.completed);
-        break;
-      case 'completed':
-        filtered = this.tasks.filter(task => task.completed);
-        break;
-      default:
-        filtered = [...this.tasks];
-    }
-    
-    this.filteredTasks = filtered; // Update filteredTasks
-    return filtered;
-  }
-
-  applyFilter(): void {
-    this.filteredTasks = this.tasks.filter(task => {
-      // Check what conditions are filtering out your tasks
-      const matchesSearch = !this.searchTerm || 
-        task.title.toLowerCase().includes(this.searchTerm.toLowerCase()) || 
-        task.description.toLowerCase().includes(this.searchTerm.toLowerCase());
-      
-      const matchesStatus = this.filterStatus === 'all' || 
-        (this.filterStatus === 'active' && !task.completed) ||
-        (this.filterStatus === 'completed' && task.completed);
-        
-      return matchesSearch && matchesStatus;
-    });
-    console.log('After filtering:', this.filteredTasks.length, 'tasks remain');
     this.updateTaskStats();
   }
 
   applySearch(searchTerm: string): void {
-    if (!searchTerm || searchTerm.trim() === '') {
-      this.filteredTasks = this.allTasks;
-      return;
-    }
-
-    const searchTermLower = searchTerm.toLowerCase();
-    this.filteredTasks = this.allTasks.filter(task => 
-      task.title.toLowerCase().includes(searchTermLower) || 
-      (task.description && task.description.toLowerCase().includes(searchTermLower))
-    );
+    this.searchTerm = searchTerm;
+    this.applyFilters();
   }
 
   searchTasks(term: string): void {
     this.searchTerm = term;
-    this.applyFilter();
+    this.applyFilters();
   }
 
   toggleTaskStatus(task: any): void {
@@ -161,10 +137,12 @@ export class TaskListComponent implements OnInit {
       next: () => {
         task.completed = !task.completed;
         this.updateTaskStats();
+        this.applyFilters(); // Reapply filters after status change
       },
       error: (err) => {
         console.error('Error updating task status:', err);
         this.errorMessage = 'Failed to update task. Please try again.';
+        this.snackBar.open(this.errorMessage, 'Close', { duration: 3000 });
       }
     });
   }
@@ -174,7 +152,7 @@ export class TaskListComponent implements OnInit {
   }
 
   addTask(): void {
-    console.log('Add new task called');
+    console.log('Opening add task dialog');
     
     const dialogRef = this.dialog.open(TaskDialogComponent, {
       width: '500px',
@@ -185,45 +163,48 @@ export class TaskListComponent implements OnInit {
       if (result) {
         this.taskService.addTask(result).subscribe({
           next: (newTask) => {
-            console.log('Task added successfully', newTask);
+            console.log('Task added successfully:', newTask);
             this.tasks.push(newTask);
             this.allTasks.push(newTask);
-            this.errorMessage = '';
-            this.applyFilters(); // Apply filters after adding a task
+            this.applyFilters();
             this.updateTaskStats();
+            this.snackBar.open('Task added successfully', 'Close', { duration: 3000 });
           },
           error: (err) => {
             console.error('Error adding task:', err);
             this.errorMessage = 'Failed to add task. Please try again.';
+            this.snackBar.open(this.errorMessage, 'Close', { duration: 3000 });
           }
         });
       }
     });
   }
 
-  editTask(task: Task): void {
+  editTask(task: any): void {
     const dialogRef = this.dialog.open(TaskDialogComponent, {
       width: '500px',
-      data: {
+      data: { 
         isEdit: true,
-        task: task
+        task: { ...task }
       }
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.taskService.updateTask(result).subscribe({
-          next: () => {
-            this.loadTasks();
-            this.snackBar.open('Task updated successfully', 'Close', {
-              duration: 3000
-            });
+          next: (updatedTask) => {
+            const index = this.tasks.findIndex(t => t._id === updatedTask._id);
+            if (index !== -1) {
+              this.tasks[index] = updatedTask;
+              this.allTasks = [...this.tasks];
+              this.applyFilters();
+              this.updateTaskStats();
+            }
+            this.snackBar.open('Task updated successfully', 'Close', { duration: 3000 });
           },
-          error: (error) => {
-            console.error('Error updating task:', error);
-            this.snackBar.open('Failed to update task', 'Close', {
-              duration: 3000
-            });
+          error: (err) => {
+            console.error('Error updating task:', err);
+            this.snackBar.open('Failed to update task', 'Close', { duration: 3000 });
           }
         });
       }
@@ -232,23 +213,22 @@ export class TaskListComponent implements OnInit {
 
   deleteTask(task: any): void {
     if (confirm('Are you sure you want to delete this task?')) {
-      const id = task._id; // Make sure we're using the correct ID
+      const id = task._id;
       
       console.log('Attempting to delete task:', task);
       
       this.taskService.deleteTask(id).subscribe({
         next: () => {
-          console.log('Delete successful in component');
-          // Update local array to remove deleted task
+          console.log('Delete successful');
           this.tasks = this.tasks.filter(t => t._id !== id);
           this.allTasks = this.allTasks.filter(t => t._id !== id);
-          this.applyFilters(); // Apply filters after deleting a task
+          this.applyFilters();
           this.updateTaskStats();
           this.snackBar.open('Task deleted successfully', 'Close', { duration: 3000 });
         },
         error: (err) => {
           console.error('Error deleting task:', err);
-          this.snackBar.open('Failed to delete task: ' + err.message, 'Close', { duration: 3000 });
+          this.snackBar.open('Failed to delete task', 'Close', { duration: 3000 });
         }
       });
     }
@@ -259,6 +239,8 @@ export class TaskListComponent implements OnInit {
   }
 
   updateTaskStats(): void {
+    if (!this.tasks) return;
+    
     this.taskStats.total = this.tasks.length;
     this.taskStats.completed = this.tasks.filter(task => task.completed).length;
     this.taskStats.active = this.tasks.filter(task => !task.completed).length;
