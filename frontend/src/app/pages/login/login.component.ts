@@ -53,7 +53,16 @@ export class LoginComponent implements OnInit {
         },
         error: (error) => {
           this.isLoading = false;
-          this.errorMessage = error.message || 'Login failed. Please check your credentials and try again.';
+          console.error('Login error:', error);
+          
+          // Extract the error message from the response
+          if (error.error && error.error.message) {
+            this.errorMessage = error.error.message;
+          } else if (error.status === 401) {
+            this.errorMessage = 'Invalid email or password. Please try again.';
+          } else {
+            this.errorMessage = 'Login failed. Please try again.';
+          }
         },
         complete: () => {
           this.isLoading = false;

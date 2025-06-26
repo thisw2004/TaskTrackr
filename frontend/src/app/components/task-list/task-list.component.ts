@@ -41,9 +41,23 @@ export class TaskListComponent implements OnInit {
     this.error = null;
     
     this.taskService.getTasks().subscribe({
-      next: (data) => {
-        console.log('Tasks loaded from API:', data); 
-        this.tasks = data;
+      next: (data: any) => {
+        console.log('Raw response from API:', data); 
+        
+        // Handle different response formats
+        let tasks: any[] = [];
+        
+        if (Array.isArray(data)) {
+          tasks = data;
+        } else if (data && data.data && Array.isArray(data.data)) {
+          tasks = data.data;
+        } else if (data && typeof data === 'object') {
+          console.warn('Unexpected response format, trying to extract tasks');
+          tasks = Array.isArray(data.tasks) ? data.tasks : [];
+        }
+        
+        console.log('Processed tasks:', tasks.length, 'tasks'); 
+        this.tasks = tasks;
         this.allTasks = [...this.tasks];
         this.filteredTasks = [...this.tasks]; // Initialize with all tasks
         this.applyFilters(); // Then apply any filters

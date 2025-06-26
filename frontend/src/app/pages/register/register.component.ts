@@ -44,9 +44,20 @@ export class RegisterComponent implements OnInit {
           queryParams: { registered: 'true' } 
         });
       },
-      error: (error: { error: { message: string } }): void => {
-      
-        this.errorMessage = error.error.message || 'Registration failed. Please try again.';
+      error: (error: any): void => {
+        console.error('Registration error:', error);
+        
+        if (error.error && error.error.message) {
+          this.errorMessage = error.error.message;
+        } else if (error.friendlyMessage) {
+          this.errorMessage = error.friendlyMessage;
+        } else if (error.status === 400) {
+          this.errorMessage = 'Invalid registration details. Please check your information and try again.';
+        } else if (error.status === 409 || (error.error && error.error.includes('duplicate'))) {
+          this.errorMessage = 'This email address is already registered. Please use a different email.';
+        } else {
+          this.errorMessage = 'Registration failed. Please try again.';
+        }
       }
     });
   }

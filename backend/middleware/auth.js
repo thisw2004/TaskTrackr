@@ -26,6 +26,11 @@ module.exports = async function(req, res, next) {
 
     next();
   } catch (err) {
-    res.status(401).json({ success: false, message: 'Token is not valid' });
+    console.error('Token validation error:', err.message);
+    res.status(401).json({ 
+      success: false, 
+      message: 'Authentication failed. Please log in again.',
+      error: err.message
+    });
   }
 };

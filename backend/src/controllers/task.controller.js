@@ -14,11 +14,25 @@ exports.getAllTasks = async (req, res) => {
 // Get a specific task by ID
 exports.getTaskById = async (req, res) => {
   try {
-    const task = await Task.findOne({
-      _id: req.params.id,
-      user: req.user._id
-    });
+    const taskId = req.params.id;
     
+    // Handle special route parameters
+    if (taskId === 'due-today') {
+      // Handle 'due-today' special case - find tasks due today
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      
+      const tasks = await Task.find({
+        dueDate: { $gte: today, $lt: tomorrow }
+      });
+      
+      return res.status(200).json(tasks);
+    }
+    
+    // Regular case - fetch by ObjectId
+    const task = await Task.findById(taskId);
     if (!task) {
       return res.status(404).json({ message: 'Task not found' });
     }
@@ -26,7 +40,7 @@ exports.getTaskById = async (req, res) => {
     res.status(200).json(task);
   } catch (error) {
     console.error('Error fetching task:', error);
-    res.status(500).json({ message: 'Server error while fetching task' });
+    res.status(500).json({ message: 'Error fetching task', error: error.message });
   }
 };
 

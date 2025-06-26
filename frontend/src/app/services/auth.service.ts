@@ -35,14 +35,26 @@ export class AuthService {
   }
 
   login(credentials: {email: string, password: string}): Observable<any> {
+    console.log('Attempting login with:', credentials.email);
+    
     return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
+        console.log('Login response:', response);
+        
         if (response && response.token) {
-          sessionStorage.setItem(this.tokenKey, response.token);
+          localStorage.setItem(this.tokenKey, response.token);
           
+          // Handle the user object, which might be in different formats
+          let userData = null;
           if (response.user) {
-            sessionStorage.setItem(this.userKey, JSON.stringify(response.user));
-            this.currentUserSubject.next(response.user);
+            userData = response.user;
+          } else if (response.data) {
+            userData = response.data;
+          }
+          
+          if (userData) {
+            localStorage.setItem(this.userKey, JSON.stringify(userData));
+            this.currentUserSubject.next(userData);
           }
           
           this.authStatusSubject.next(true);
@@ -52,8 +64,8 @@ export class AuthService {
   }
 
   logout(): void {
-    sessionStorage.removeItem(this.tokenKey);
-    sessionStorage.removeItem(this.userKey);
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.userKey);
     this.authStatusSubject.next(false);
     this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
@@ -69,9 +81,9 @@ export class AuthService {
     return this.http.post<any>(`${this.apiUrl}/register`, userData).pipe(
       tap(response => {
         if (response && response.token) {
-          sessionStorage.setItem(this.tokenKey, response.token);
+          localStorage.setItem(this.tokenKey, response.token);
           if (response.user) {
-            sessionStorage.setItem(this.userKey, JSON.stringify(response.user));
+            localStorage.setItem(this.userKey, JSON.stringify(response.user));
             this.currentUserSubject.next(response.user);
           }
           this.authStatusSubject.next(true);
@@ -91,7 +103,7 @@ export class AuthService {
 
     return this.http.get<User>(`${this.apiUrl}/user`).pipe(
       tap(user => {
-        sessionStorage.setItem(this.userKey, JSON.stringify(user));
+        localStorage.setItem(this.userKey, JSON.stringify(user));
         this.currentUserSubject.next(user);
       })
     );
@@ -109,11 +121,11 @@ export class AuthService {
   }
 
   getToken(): string | null {
-    return sessionStorage.getItem(this.tokenKey);
+    return localStorage.getItem(this.tokenKey);
   }
 
   getUserData(): User | null {
-    const userData = sessionStorage.getItem(this.userKey);
+    const userData = localStorage.getItem(this.userKey);
     return userData ? JSON.parse(userData) : null;
   }
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
-import { catchError, retry, tap } from 'rxjs/operators';
+import { catchError, retry, tap, map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { Router } from '@angular/router';
 
@@ -30,12 +30,23 @@ export class TaskService {
   // Get tasks with proper authentication headers
   getTasks(): Observable<any[]> {
     if (!this.checkAuth()) {
+      console.log('User not authenticated, returning empty task list');
       return of([]);
     }
 
     const headers = this.getAuthHeaders();
+    console.log('Fetching tasks with auth token:', this.authService.getToken()?.substring(0, 10) + '...');
     
-    return this.http.get<any[]>(this.apiUrl, { headers }).pipe(
+    return this.http.get<any>(this.apiUrl, { headers }).pipe(
+      map((response: any) => {
+        // Check if the response is wrapped in a data property (common API pattern)
+        if (response && response.data) {
+          console.log(`Received ${response.data.length} tasks in data property`);
+          return response.data;
+        }
+        console.log(`Received ${response.length} tasks directly`);
+        return response;
+      }),
       retry(1),
       catchError(this.handleError)
     );
@@ -132,6 +143,10 @@ export class TaskService {
   // Helper method to get authentication headers
   private getAuthHeaders(): HttpHeaders {
     const token = this.authService.getToken();
+    if (!token) {
+      console.error('No auth token available');
+      this.router.navigate(['/login']);
+    }
     return new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
@@ -140,11 +155,32 @@ export class TaskService {
 
   // Error handling
   private handleError = (error: HttpErrorResponse) => {
+    console.error('API Error:', error);
+    
     if (error.status === 401) {
       console.log('Authentication error, redirecting to login');
       this.authService.logout();
       this.router.navigate(['/login']);
+    } else if (error.status === 403) {
+      console.error('Forbidden access');
+      // You might want to handle forbidden access differently
+    } else if (error.status === 404) {
+      console.error('Resource not found');
+    } else if (error.status >= 500) {
+      console.error('Server error');
     }
-    return throwError(() => error);
+    
+    // Extract the most user-friendly error message possible
+    let errorMessage = 'An error occurred';
+    if (error.error && error.error.message) {
+      errorMessage = error.error.message;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+    
+    return throwError(() => ({
+      ...error,
+      friendlyMessage: errorMessage
+    }));
   }
 }
