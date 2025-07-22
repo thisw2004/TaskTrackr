@@ -76,7 +76,7 @@ UserSchema.methods.getSignedJwtToken = function() {
   return jwt.sign(
     { id: this._id },
     config.jwtSecret,
-    { expiresIn: config.jwtExpiration }
+    { expiresIn: '24h' }
   );
 };
 
